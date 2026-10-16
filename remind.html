@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ReMind – Early Alzheimer's Screening</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{--bg:#f2f6f7;--surface:#fff;--ink:#1b2a41;--muted:#56657a;--line:#d3dde2;--teal:#1d7a72;--teal-ink:#fff;--amber:#b4531a;--amber-bg:#fbeee3;--ok-bg:#e1f1ed;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101a26;--surface:#18263a;--ink:#e8eff5;--muted:#9fb0c2;--line:#2c3e55;--teal:#4fc0b4;--teal-ink:#0b1a24;--amber:#f0a272;--amber-bg:#3a2a20;--ok-bg:#16363a}}
+:root[data-theme="dark"]{--bg:#101a26;--surface:#18263a;--ink:#e8eff5;--muted:#9fb0c2;--line:#2c3e55;--teal:#4fc0b4;--teal-ink:#0b1a24;--amber:#f0a272;--amber-bg:#3a2a20;--ok-bg:#16363a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{font-weight:700;font-size:1.35rem;letter-spacing:.2px}
+.logo b{color:var(--teal)}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:none;border:2px solid transparent;color:var(--ink);font:inherit;padding:6px 14px;border-radius:8px;cursor:pointer}
+nav button[aria-current="page"]{border-color:var(--teal);font-weight:700}
+button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+main{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:2.1rem;line-height:1.2;margin:0 0 12px}
+h2{font-size:1.4rem;margin:0 0 10px}
+p{margin:0 0 14px;max-width:62ch}
+.muted{color:var(--muted);font-size:.95rem}
+.btn{background:var(--teal);color:var(--teal-ink);border:0;border-radius:10px;padding:12px 22px;font:inherit;font-weight:700;cursor:pointer}
+.btn.alt{background:none;color:var(--ink);border:2px solid var(--line)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;margin:18px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.hidden{display:none!important}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opts button{text-align:left;background:var(--bg);border:2px solid var(--line);color:var(--ink);border-radius:10px;padding:12px 16px;font:inherit;cursor:pointer}
+.opts button:hover{border-color:var(--teal)}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 18px}
+.bar i{display:block;height:100%;background:var(--teal);transition:width .3s}
+input[type=number],select{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:120px}
+.result{border-left:8px solid var(--teal);background:var(--ok-bg)}
+.result.high{border-color:var(--amber);background:var(--amber-bg)}
+.big{font-size:3rem;font-weight:700;line-height:1}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:400px}
+.card{aspect-ratio:1;font-size:2rem;background:var(--teal);color:var(--teal-ink);border:0;border-radius:10px;cursor:pointer}
+.card.up{background:var(--surface);color:var(--ink);border:2px solid var(--teal)}
+.card.done{background:var(--ok-bg);color:var(--ink);border:2px solid var(--ok-bg)}
+.stroop{font-size:3.4rem;font-weight:700;text-align:center;margin:20px 0}
+.cols{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.cols button{min-width:100px}
+table{border-collapse:collapse;width:100%}
+td,th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+.note{font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:30px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Re<b>Mind</b></div>
+  <nav aria-label="Main">
+    <button data-go="home">Home</button>
+    <button data-go="screen">Screening</button>
+    <button data-go="games">Games</button>
+    <button data-go="track">My results</button>
+  </nav>
+</header>
+<main>
+
+<!-- HOME -->
+<section id="home">
+  <h1>Check your cognitive health in 5 minutes.</h1>
+  <p>ReMind is a free early screening for Alzheimer's disease. Answer a short questionnaire. Our model, trained on real patient data from the National Alzheimer's Coordinating Center, estimates your risk level from your age, mood, and behavior.</p>
+  <p>If your risk is high, you get brain games and tracking to share with your doctor. If it is low, you get regular check-ins so changes are caught early.</p>
+  <div class="row"><button class="btn" data-go="screen">Start screening</button><button class="btn alt" data-go="games">Try the games</button></div>
+  <p class="note">ReMind is a screening tool, not a diagnosis. It does not replace a doctor. If you are worried about memory changes, talk to a healthcare professional.</p>
+</section>
+
+<!-- SCREEN -->
+<section id="screen" class="hidden">
+  <div id="intro" class="panel">
+    <h2>About you</h2>
+    <p>Answer for yourself, or for the person you care for. The screening has 22 short questions.</p>
+    <p><label for="age">Age</label><br><input id="age" type="number" min="40" max="110" value="65" inputmode="numeric"></p>
+    <p><label for="sex">Sex</label><br><select id="sex"><option value="1">Male</option><option value="2">Female</option></select></p>
+    <p><label for="edu">Years of education (12 = high school, 16 = bachelor's)</label><br><input id="edu" type="number" min="0" max="30" value="16" inputmode="numeric"></p>
+    <p id="err" class="muted" role="alert"></p>
+    <div class="row"><button class="btn" id="begin">Begin</button></div>
+  </div>
+  <div id="quiz" class="panel hidden">
+    <div class="muted" id="qcount"></div>
+    <div class="bar"><i id="qbar"></i></div>
+    <h2 id="qtext"></h2>
+    <div class="opts" id="qopts"></div>
+    <div class="row"><button class="btn alt" id="back">Back</button></div>
+  </div>
+  <div id="res" class="hidden"></div>
+</section>
+
+<!-- GAMES -->
+<section id="games" class="hidden">
+  <h1>Brain games</h1>
+  <p id="modeMsg" class="muted"></p>
+  <div class="panel">
+    <h2>Memory match</h2>
+    <p class="muted">Flip two cards at a time and find all the pairs. Trains memory.</p>
+    <div class="grid" id="mgrid"></div>
+    <p id="mstat" class="muted" style="margin-top:12px"></p>
+    <div class="row"><button class="btn" id="mnew">New game</button></div>
+  </div>
+  <div class="panel">
+    <h2>Color word test (Stroop)</h2>
+    <p class="muted">Tap the color of the ink, not the word. Trains mental flexibility. 10 rounds.</p>
+    <div class="stroop" id="sword">Ready?</div>
+    <div class="cols" id="sbtns"></div>
+    <p id="sstat" class="muted" style="text-align:center"></p>
+    <div class="row" style="justify-content:center"><button class="btn" id="snew">Start</button></div>
+  </div>
+</section>
+
+<!-- TRACK -->
+<section id="track" class="hidden">
+  <h1>My results</h1>
+  <div id="hist"></div>
+</section>
+
+</main>
+
+<script>
+/* ============ STORAGE (safe) ============ */
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* ============ MODEL ============ */
+/* Logistic regression (GLM, binomial) fit on NACC first-visit data: AD vs cognitively normal, n=37,159.
+   Cross-validated AUC 0.81. NACCNE4S (APOE e4 count) had coefficient ~0 and is omitted. */
+const B={b0:-4.198957,age:0.070674,sex:-0.349125,educ:-0.058056,ANXSEV:0.502511,DEPDSEV:0.106382,APASEV:0.857935,AGITSEV:0.485494,NACCGDS:0.184480,ENERGY:-0.627794,AFRAID:-0.175523,MOT:1.261659,NITE:0.103293,APP:0.689130};
+const MLP=null; /* paste exported MLP JSON here to switch from logistic to the neural net */
+function mlpPredict(f){let x=MLP.features.map((k,i)=>(f[k]-MLP.mu[i])/MLP.sd[i]);MLP.layers.forEach((L,li)=>{x=L.W.map((row,r)=>row.reduce((s,w,c)=>s+w*x[c],L.b[r]));if(li<MLP.layers.length-1)x=x.map(v=>Math.max(0,v))});return 1/(1+Math.exp(-x[0]))}
+function predictRisk(f){if(MLP)return mlpPredict(f);let z=B.b0;for(const k in B)if(k!=="b0")z+=B[k]*f[k];return 1/(1+Math.exp(-z))}
+const HIGH_CUTOFF=0.5; // the model's classification threshold
+function tier(p){return p<.2?"Very low":p<.4?"Low":p<.6?"Moderate":p<.8?"High":"Very high"}
+
+/* ============ QUESTIONS ============ */
+const SEV=[["None",0],["Mild",1],["Moderate",2],["Severe",3]],YN=[["No",0],["Yes",1]];
+const G1="Mood and behavior in the past month",G2="How you have felt over the past week";
+const GDS=[ // bad = the answer that adds 1 point on the GDS-15
+ ["g1","Are you basically satisfied with your life?",0],["g2","Have you dropped many of your activities and interests?",1],
+ ["g3","Do you feel that your life is empty?",1],["g4","Do you often get bored?",1],
+ ["g5","Are you in good spirits most of the time?",0],["g6","Are you afraid that something bad is going to happen to you?",1],
+ ["g7","Do you feel happy most of the time?",0],["g8","Do you often feel helpless?",1],
+ ["g9","Do you prefer to stay at home rather than go out and do new things?",1],["g10","Do you feel you have more problems with memory than most?",1],
+ ["g11","Do you think it is wonderful to be alive now?",0],["g12","Do you feel pretty worthless the way you are now?",1],
+ ["g13","Do you feel full of energy?",0],["g14","Do you feel that your situation is hopeless?",1],
+ ["g15","Do you think most people are better off than you are?",1]].map(a=>({id:a[0],t:a[1],bad:a[2],o:YN,g:G2}));
+const Q=[
+ {id:"ANXSEV",t:"How much anxiety has there been (worry, nervousness, tension)?",o:SEV,g:G1},
+ {id:"DEPDSEV",t:"How much sadness or low mood has there been (seems down, tearful)?",o:SEV,g:G1},
+ {id:"APASEV",t:"How much apathy has there been (less interest in usual activities or in other people's plans)?",o:SEV,g:G1},
+ {id:"AGITSEV",t:"How much agitation or irritability has there been (resists help, hard to handle, arguing)?",o:SEV,g:G1},
+ {id:"MOT",t:"Have there been repetitive movements, like pacing, fidgeting, or doing the same activity over and over?",o:YN,g:G1},
+ {id:"NITE",t:"Have there been night-time disruptions, like waking up and getting dressed in the middle of the night?",o:YN,g:G1},
+ {id:"APP",t:"Have there been changes in appetite or eating, such as weight change or new food preferences?",o:YN,g:G1},
+ ...GDS
+];
+
+/* ============ NAV ============ */
+const secs=["home","screen","games","track"];
+function go(id){
+  secs.forEach(s=>document.getElementById(s).classList.toggle("hidden",s!==id));
+  document.querySelectorAll("nav button").forEach(b=>b.toggleAttribute("aria-current",b.dataset.go===id)||0);
+  document.querySelectorAll("nav button").forEach(b=>{if(b.dataset.go===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  if(id==="games")gamesInit();
+  if(id==="track")renderHist();
+  window.scrollTo(0,0);
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)go(b.dataset.go)});
+
+/* ============ SCREENING ============ */
+let qi=0,ans={},demo={};
+const $=id=>document.getElementById(id);
+$("begin").onclick=()=>{
+  const a=+$("age").value,e=+$("edu").value;
+  if(!(a>=40&&a<=110)){$("err").textContent="Enter an age from 40 to 110.";return}
+  if(!(e>=0&&e<=30)){$("err").textContent="Enter years of education from 0 to 30.";return}
+  $("err").textContent="";demo={age:a,sex:+$("sex").value,educ:e};qi=0;ans={};
+  $("intro").classList.add("hidden");$("res").classList.add("hidden");$("quiz").classList.remove("hidden");showQ();
+};
+$("back").onclick=()=>{if(qi>0){qi--;showQ()}};
+function showQ(){
+  const q=Q[qi];
+  $("qcount").textContent=`Question ${qi+1} of ${Q.length}. ${q.g}`;
+  $("qbar").style.width=(qi/Q.length*100)+"%";
+  $("qtext").textContent=q.t;
+  $("qopts").innerHTML="";
+  q.o.forEach(([label,val])=>{const b=document.createElement("button");b.textContent=label;b.onclick=()=>{ans[q.id]=val;qi++;qi<Q.length?showQ():finish()};$("qopts").appendChild(b)});
+}
+function finish(){
+  const gds=GDS.reduce((n,q)=>n+(ans[q.id]===q.bad?1:0),0);
+  const f={age:demo.age,sex:demo.sex,educ:demo.educ,ANXSEV:ans.ANXSEV,DEPDSEV:ans.DEPDSEV,APASEV:ans.APASEV,AGITSEV:ans.AGITSEV,MOT:ans.MOT,NITE:ans.NITE,APP:ans.APP,NACCGDS:gds,AFRAID:ans.g6,ENERGY:ans.g13};
+  const p=predictRisk(f),high=p>=HIGH_CUTOFF,t=tier(p);
+  const h=store.get("history",[]);h.push({d:new Date().toISOString(),p,t,high});store.set("history",h);
+  store.set("mode",high?"high":"low");
+  $("quiz").classList.add("hidden");
+  const r=$("res");r.classList.remove("hidden");
+  r.innerHTML=`<div class="panel result ${high?"high":""}">
+    <h2>${high?"Higher risk pattern":"Lower risk pattern"}</h2>
+    <div class="big">${t}</div>
+    <p class="muted">risk level (model score ${p.toFixed(2)} out of 1)</p>
+    <p>${high?"Your answers match patterns seen more often in people who later develop Alzheimer's. This is not a diagnosis. Please share this result with your doctor. You can use the brain games and track changes over time.":"Your answers match patterns seen more often in people without Alzheimer's. Re-screen every 3 months so any change is caught early. Exercise, sleep, and social time help."}</p>
+    ${gds>=5?'<p>Your mood answers suggest low mood. This is common and treatable, so mention it to your doctor. If you ever feel unsafe, call or text 988 (US).</p>':''}
+    <p class="muted">The model was trained on research-clinic data. The level compares you with that group, so it is not your personal chance of getting Alzheimer's.</p>
+    <div class="row">
+      ${high?'<button class="btn" data-go="games">Open brain games</button>':'<button class="btn" data-go="track">See my results</button>'}
+      <button class="btn alt" id="again">Screen again</button>
+    </div></div>`;
+  $("again").onclick=()=>{$("intro").classList.remove("hidden");r.classList.add("hidden")};
+}
+
+/* ============ TRACK ============ */
+function renderHist(){
+  const h=store.get("history",[]),g=store.get("gameLog",[]);
+  let html="";
+  if(!h.length)html+=`<div class="panel"><p>No screenings yet.</p><button class="btn" data-go="screen">Start screening</button></div>`;
+  else html+=`<div class="panel"><h2>Screenings</h2><table><tr><th>Date</th><th>Risk level</th><th>Pattern</th></tr>${h.slice().reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.t||""} (${x.p.toFixed(2)})</td><td>${x.high?"Higher":"Lower"}</td></tr>`).join("")}</table></div>`;
+  if(g.length)html+=`<div class="panel"><h2>Game scores</h2><table><tr><th>Date</th><th>Game</th><th>Result</th></tr>${g.slice(-10).reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.g}</td><td>${x.r}</td></tr>`).join("")}</table></div>`;
+  if(h.length||g.length)html+=`<div class="row"><button class="btn alt" id="clr">Clear my data</button></div>`;
+  $("hist").innerHTML=html;
+  const c=$("clr");if(c)c.onclick=()=>{store.set("history",[]);store.set("gameLog",[]);store.set("mode",null);renderHist()};
+}
+function logGame(g,r){const l=store.get("gameLog",[]);l.push({d:new Date().toISOString(),g,r});store.set("gameLog",l)}
+
+/* ============ GAMES ============ */
+function gamesInit(){
+  const m=store.get("mode",null);
+  $("modeMsg").textContent=m==="high"?"Suggested daily: one round of each game. Scores are saved to My results.":m==="low"?"You are in monitoring mode. Games are optional. Re-screen every 3 months.":"Take the screening first to get a plan. You can play any time.";
+  if(!$("mgrid").children.length)newMemory();
+}
+/* Memory match */
+let mFirst=null,mLock=false,mMoves=0,mLeft=0;
+function newMemory(){
+  const sym=["🍎","🌻","🐦","⭐","🚲","🎵","🍋","🌙"];
+  const deck=[...sym,...sym].sort(()=>Math.random()-.5);
+  mFirst=null;mLock=false;mMoves=0;mLeft=8;$("mstat").textContent="Moves: 0";
+  const g=$("mgrid");g.innerHTML="";
+  deck.forEach(s=>{
+    const b=document.createElement("button");b.className="card";b.setAttribute("aria-label","Hidden card");b.dataset.s=s;b.textContent="";
+    b.onclick=()=>{
+      if(mLock||b.classList.contains("up")||b.classList.contains("done"))return;
+      b.classList.add("up");b.textContent=s;b.setAttribute("aria-label",s);
+      if(!mFirst){mFirst=b;return}
+      mMoves++;$("mstat").textContent="Moves: "+mMoves;
+      if(mFirst.dataset.s===s){mFirst.className=b.className="card done";mFirst=null;
+        if(--mLeft===0){$("mstat").textContent=`Done in ${mMoves} moves. Fewer moves is better.`;logGame("Memory match",mMoves+" moves")}}
+      else{mLock=true;const a=mFirst;mFirst=null;setTimeout(()=>{[a,b].forEach(x=>{x.className="card";x.textContent="";x.setAttribute("aria-label","Hidden card")});mLock=false},900)}
+    };
+    g.appendChild(b);
+  });
+}
+$("mnew").onclick=newMemory;
+/* Stroop */
+const COL=[["Red","#c62828"],["Blue","#1565c0"],["Green","#2e7d32"],["Orange","#e08a00"]];
+let sRound=0,sOk=0,sTimes=[],sT0=0,sCur=null,sOn=false;
+const sb=$("sbtns");
+COL.forEach(([n,c])=>{const b=document.createElement("button");b.className="btn alt";b.textContent=n;b.onclick=()=>sAnswer(n);sb.appendChild(b)});
+$("snew").onclick=()=>{sRound=0;sOk=0;sTimes=[];sOn=true;sNext()};
+function sNext(){
+  if(sRound>=10){sOn=false;const avg=sTimes.reduce((a,b)=>a+b,0)/sTimes.length/1000;
+    $("sword").textContent="Done";$("sword").style.color="";
+    const r=`${sOk}/10 correct, ${avg.toFixed(1)}s average`;$("sstat").textContent=r;logGame("Stroop",r);return}
+  const w=COL[Math.floor(Math.random()*4)][0];
+  let ink;do{ink=COL[Math.floor(Math.random()*4)]}while(Math.random()<.85&&ink[0]===w);
+  sCur=ink[0];$("sword").textContent=w;$("sword").style.color=ink[1];
+  $("sstat").textContent=`Round ${sRound+1} of 10`;sT0=performance.now();
+}
+function sAnswer(n){if(!sOn)return;sTimes.push(performance.now()-sT0);if(n===sCur)sOk++;sRound++;sNext()}
+
+go("home");
+</script>
+</body>
+</html>
