@@ -12,7 +12,7 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 :root[data-theme="dark"]{--bg:#0f1020;--surface:#191a33;--ink:#eceefc;--muted:#a3a7c4;--line:#2d2f55;--teal:#8b84ff;--teal-ink:#0f1020;--ok-bg:#222552;--amber:#f0a272;--amber-bg:#3a2a20;--shadow:none}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 "Plus Jakarta Sans",system-ui,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.125rem/1.55 "Plus Jakarta Sans",system-ui,sans-serif}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
 .logo{display:flex;align-items:center;font-weight:800;font-size:1.25rem}
 .mark{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;margin-right:10px;font-size:1.4rem;line-height:1}
@@ -58,11 +58,29 @@ td,th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
 .foot{font-size:.75rem;color:var(--muted);text-align:center;margin:18px 0 0}
 #screen{max-width:560px;margin:0 auto}
 h1{font-weight:800}
+#auth{max-width:460px;margin:0 auto}
+#auth input{width:100%;font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+#auth input:focus{border-color:var(--teal)}
+.a11y{display:flex;gap:6px;justify-content:flex-end;align-items:center;padding:6px 20px;background:var(--ok-bg);font-size:.8rem;flex-wrap:wrap}
+.a11y button{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:3px 10px;cursor:pointer}
+:root.hc{--bg:#000;--surface:#000;--ink:#fff;--muted:#e6e6e6;--line:#fff;--teal:#ffe04d;--teal-ink:#000;--ok-bg:#1a1a1a;--amber:#ffb27a;--amber-bg:#222;--grad:linear-gradient(90deg,#ffe04d,#ffe04d);--shadow:none}
+.who{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--line);font-size:.9rem}
+.who select{width:auto;padding:6px 10px}
+.fb{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:.9rem}
+.fb .l{flex:0 0 46%}
+.fb .tr{flex:1;height:12px;background:var(--line);border-radius:6px;position:relative}
+.fb .tr::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--ink)}
+.fb .tr i{position:absolute;top:0;height:100%;border-radius:6px}
+.up{background:var(--amber)}.dn{background:var(--teal)}
+.chart{width:100%;height:auto;margin:6px 0}
+#report{display:none}
+@media print{body{background:#fff!important}body>*:not(#report){display:none!important}#report{display:block!important;color:#000;background:#fff;font-size:12pt}#report table{width:100%}}
 .note{font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:30px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<div class="a11y" role="toolbar" aria-label="Accessibility options"><span>Accessibility:</span><button id="fsm" aria-label="Smaller text">A−</button><button id="fsp" aria-label="Larger text">A+</button><button id="hcb" aria-pressed="false">High contrast</button><button id="tts">Read page aloud</button></div>
 <header>
   <div class="logo"><span class="mark">+</span>ReMind</div>
   <nav aria-label="Main">
@@ -70,9 +88,10 @@ h1{font-weight:800}
     <button data-go="screen">Screening</button>
     <button data-go="games">Games</button>
     <button data-go="track">My results</button>
-    <button class="btn pill" data-go="screen">Get Started</button>
+    <button class="btn pill" id="authbtn">Log in</button>
   </nav>
 </header>
+<div class="who hidden" id="who"><label for="whoSel">Screening for:</label><select id="whoSel"></select><button class="btn alt" id="addP" style="padding:6px 14px">Add a person</button></div>
 <main>
 
 <!-- HOME -->
@@ -82,6 +101,19 @@ h1{font-weight:800}
   <p>If your risk is high, you get brain games and tracking to share with your doctor. If it is low, you get regular check-ins so changes are caught early.</p>
   <div class="row"><button class="btn" data-go="screen">Start screening</button><button class="btn alt" data-go="games">Try the games</button></div>
   <p class="note">ReMind is a screening tool, not a diagnosis. It does not replace a doctor. If you are worried about memory changes, talk to a healthcare professional.</p>
+</section>
+
+<!-- AUTH -->
+<section id="auth" class="hidden">
+  <h1 class="ctitle"><span class="gt">Welcome</span> to ReMind</h1>
+  <div class="panel">
+    <div class="row" style="margin:0 0 16px"><button class="btn" id="tabin">Log in</button><button class="btn alt" id="tabup">Create account</button></div>
+    <p><label for="un">Username</label><br><input id="un" type="text" autocomplete="username" autocapitalize="none" spellcheck="false"></p>
+    <p><label for="pw">Password (6+ characters)</label><br><input id="pw" type="password" autocomplete="current-password"></p>
+    <p id="aerr" class="muted" role="alert"></p>
+    <button class="btn" id="asubmit" style="width:100%">Log in</button>
+    <p class="foot">Your account and results are saved only on this device. Screening 2.0 • Not medical advice</p>
+  </div>
 </section>
 
 <!-- SCREEN -->
@@ -137,11 +169,13 @@ h1{font-weight:800}
 </section>
 
 </main>
+<div id="report"></div>
 
 <script>
 /* ============ STORAGE (safe) ============ */
-const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
-set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let cur=null,prof="",curSec="home";const PK=["history","mode","gameLog"];const pk=k=>cur?(k==="profiles"?k+":"+cur:PK.includes(k)?k+":"+cur+(prof?"|"+prof:""):k):k;
+const store={get(k,d){try{const v=localStorage.getItem(pk(k));return v?JSON.parse(v):d}catch(e){return d}},
+set(k,v){try{localStorage.setItem(pk(k),JSON.stringify(v))}catch(e){}}};
 
 /* ============ MODEL ============ */
 /* Logistic regression (GLM, binomial) fit on NACC first-visit data: AD vs cognitively normal, n=37,159.
@@ -177,8 +211,11 @@ const Q=[
 ];
 
 /* ============ NAV ============ */
-const secs=["home","screen","games","track"];
+const secs=["home","auth","screen","games","track"];
+let pending=null;
 function go(id){
+  if(!cur&&["screen","games","track"].includes(id)){pending=id;id="auth"}
+  curSec=id;updateBadge();
   secs.forEach(s=>document.getElementById(s).classList.toggle("hidden",s!==id));
   document.querySelectorAll("nav button:not(.pill)").forEach(b=>b.toggleAttribute("aria-current",b.dataset.go===id)||0);
   document.querySelectorAll("nav button:not(.pill)").forEach(b=>{if(b.dataset.go===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
@@ -211,7 +248,7 @@ function finish(){
   const gds=GDS.reduce((n,q)=>n+(ans[q.id]===q.bad?1:0),0);
   const f={age:demo.age,sex:demo.sex,educ:demo.educ,ANXSEV:ans.ANXSEV,DEPDSEV:ans.DEPDSEV,APASEV:ans.APASEV,AGITSEV:ans.AGITSEV,MOT:ans.MOT,NITE:ans.NITE,APP:ans.APP,NACCGDS:gds,AFRAID:ans.g6,ENERGY:ans.g13};
   const p=predictRisk(f),high=p>=HIGH_CUTOFF,t=tier(p);
-  const h=store.get("history",[]);h.push({d:new Date().toISOString(),p,t,high});store.set("history",h);
+  const h=store.get("history",[]);h.push({d:new Date().toISOString(),p,t,high,f});store.set("history",h);
   store.set("mode",high?"high":"low");
   $("quiz").classList.add("hidden");
   const r=$("res");r.classList.remove("hidden");
@@ -221,26 +258,93 @@ function finish(){
     <p class="muted">risk level (model score ${p.toFixed(2)} out of 1)</p>
     <p>${high?"Your answers match patterns seen more often in people who later develop Alzheimer's. This is not a diagnosis. Please share this result with your doctor. You can use the brain games and track changes over time.":"Your answers match patterns seen more often in people without Alzheimer's. Re-screen every 3 months so any change is caught early. Exercise, sleep, and social time help."}</p>
     ${gds>=5?'<p>Your mood answers suggest low mood. This is common and treatable, so mention it to your doctor. If you ever feel unsafe, call or text 988 (US).</p>':''}
-    <p class="muted">The model was trained on research-clinic data. The level compares you with that group, so it is not your personal chance of getting Alzheimer's.</p>
+    ${factorsBlock(f)}<p class="muted">The model was trained on research-clinic data. The level compares you with that group, so it is not your personal chance of getting Alzheimer's.</p>
     <div class="row">
       ${high?'<button class="btn" data-go="games">Open brain games</button>':'<button class="btn" data-go="track">See my results</button>'}
       <button class="btn alt" id="again">Screen again</button>
+      <button class="btn alt" id="rep">Doctor report</button>
+      <a class="btn alt" style="text-decoration:none" href="${mailHref(p,t,high)}">Email result</a>
     </div></div>`;
   $("again").onclick=()=>{$("intro").classList.remove("hidden");r.classList.add("hidden")};
+  $("rep").onclick=printReport;updateBadge();
+}
+
+/* ============ FACTORS, CHARTS, CAREGIVER ============ */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+const sd=d=>new Date(d).toLocaleDateString(undefined,{month:"numeric",day:"numeric"});
+const FL={age:"Age",sex:"Sex",educ:"Years of education",ANXSEV:"Anxiety",DEPDSEV:"Low mood",APASEV:"Apathy",AGITSEV:"Agitation",NACCGDS:"Depression scale (GDS)",ENERGY:"Feeling full of energy",AFRAID:"Fear something bad will happen",MOT:"Repetitive movements",NITE:"Night-time disruptions",APP:"Appetite changes"};
+const REF={age:65,sex:1.5,educ:16,ANXSEV:0,DEPDSEV:0,APASEV:0,AGITSEV:0,NACCGDS:2,ENERGY:1,AFRAID:0,MOT:0,NITE:0,APP:0};
+function factors(f){return Object.keys(REF).map(k=>({k,c:B[k]*(f[k]-REF[k])})).filter(x=>Math.abs(x.c)>=0.05).sort((a,b)=>Math.abs(b.c)-Math.abs(a.c)).slice(0,6)}
+function factorsBlock(f){
+  const F=factors(f);if(!F.length)return"";const m=Math.max(...F.map(x=>Math.abs(x.c)));
+  return `<h2 style="margin-top:18px;font-size:1.1rem">What influenced this result</h2><p class="muted">Right of the line raised the score, left lowered it, compared with a typical healthy 65-year-old.</p>`+
+    F.map(x=>{const w=Math.abs(x.c)/m*50;return `<div class="fb"><span class="l">${FL[x.k]}</span><div class="tr"><i class="${x.c>0?"up":"dn"}" style="left:${x.c>0?50:50-w}%;width:${w}%"></i></div></div>`}).join("");
+}
+function chart(pts,o){
+  if(pts.length<2)return'<p class="muted">Complete at least two to see a trend.</p>';
+  const W=520,H=170,L=34,R=10,T=10,Bt=26,n=pts.length,mn=o.min,mx=o.max||1;
+  const X=i=>L+(W-L-R)*i/(n-1),Y=v=>T+(H-T-Bt)*(1-(v-mn)/(mx-mn));
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Trend chart">`;
+  [mn,(mn+mx)/2,mx].forEach(v=>s+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L-4}" y="${Y(v)+4}" text-anchor="end" font-size="10" fill="var(--muted)">${o.fmt(v)}</text>`);
+  if(o.line!=null)s+=`<line x1="${L}" x2="${W-R}" y1="${Y(o.line)}" y2="${Y(o.line)}" stroke="var(--amber)" stroke-dasharray="4 3"/>`;
+  s+=`<polyline fill="none" stroke="var(--teal)" stroke-width="3" points="${pts.map((p,i)=>X(i)+","+Y(p.y)).join(" ")}"/>`;
+  pts.forEach((p,i)=>s+=`<circle cx="${X(i)}" cy="${Y(p.y)}" r="4" fill="var(--teal)"/><text x="${X(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--muted)">${p.x}</text>`);
+  return s+"</svg>";
+}
+const rd=pr=>{try{return JSON.parse(localStorage.getItem("history:"+cur+(pr?"|"+pr:"")))||[]}catch(e){return[]}};
+const people=()=>["",...store.get("profiles",[])];
+function alertsFor(pr){
+  const h=rd(pr),a=[];if(!h.length)return[{m:"No screening yet.",k:0}];
+  const l=h[h.length-1];
+  if(l.high)a.push({m:"Higher risk pattern. Share the result with a doctor.",k:1});
+  if(h.length>1&&l.p-h[h.length-2].p>=0.1)a.push({m:"Score rose by "+(l.p-h[h.length-2].p).toFixed(2)+" since the last screening.",k:1});
+  if((Date.now()-new Date(l.d))/864e5>90)a.push({m:"A re-screening is due (over 3 months).",k:1});
+  return a;
+}
+function updateBadge(){
+  const b=document.querySelector('nav button[data-go="track"]');if(!b)return;
+  let n=0;if(cur)people().forEach(pr=>{n+=alertsFor(pr).filter(x=>x.k).length});
+  b.textContent="My results"+(n?" ("+n+")":"");
+}
+function dashHTML(){
+  if(!cur)return"";const ps=people();
+  const rows=ps.map(pr=>{const h=rd(pr),l=h[h.length-1],al=alertsFor(pr);return `<tr><td>${esc(pr||"Myself")}</td><td>${l?l.t+" ("+new Date(l.d).toLocaleDateString()+")":"None yet"}</td><td>${al.map(x=>esc(x.m)).join("<br>")||"All clear"}</td></tr>`}).join("");
+  return `<div class="panel"><h2>${ps.length>1?"Caregiver dashboard":"Alerts"}</h2><table><tr><th>Person</th><th>Latest</th><th>Alerts</th></tr>${rows}</table><p class="muted">Use "Add a person" at the top to screen someone you care for. After a screening, "Email result" sends a summary to a family member or doctor.</p></div>`;
+}
+const mailHref=(p,t,high)=>"mailto:?subject="+encodeURIComponent("ReMind screening result for "+(prof||cur))+"&body="+encodeURIComponent(`ReMind screening on ${new Date().toLocaleDateString()}\nRisk level: ${t} (model score ${p.toFixed(2)})\nPattern: ${high?"higher":"lower"} risk\nThis is a screening tool, not a diagnosis.`);
+function printReport(){
+  const h=store.get("history",[]),g=store.get("gameLog",[]);
+  if(!h.length){alert("Complete a screening first.");return}
+  const l=h[h.length-1],F=l.f?factors(l.f):[];
+  $("report").innerHTML=`<h1>ReMind screening report</h1>
+  <p><b>Person:</b> ${esc(prof||cur)}${prof?" (account: "+esc(cur)+")":""}<br><b>Date:</b> ${new Date(l.d).toLocaleDateString()}</p>
+  <h2>Latest result: ${l.t} risk level (model score ${l.p.toFixed(2)})</h2>
+  <p>${l.high?"Higher risk pattern":"Lower risk pattern"}. This is a screening tool, not a diagnosis.</p>
+  ${F.length?"<h3>Main factors</h3><ul>"+F.map(x=>`<li>${FL[x.k]}: ${x.c>0?"raised":"lowered"} the score</li>`).join("")+"</ul>":""}
+  <h3>Screening history</h3><table border="1" cellpadding="4" style="border-collapse:collapse"><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.t||""}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table>
+  ${g.length?"<h3>Recent game results</h3><table border='1' cellpadding='4' style='border-collapse:collapse'><tr><th>Date</th><th>Game</th><th>Result</th></tr>"+g.slice(-6).map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.g}</td><td>${x.r}</td></tr>`).join("")+"</table>":""}
+  <p style="font-size:10pt">Model: logistic regression trained on National Alzheimer's Coordinating Center data (cross-validated AUC 0.81). It was trained on research-clinic participants, so levels compare you with that group. Please discuss these results with a doctor.</p>`;
+  window.print();
 }
 
 /* ============ TRACK ============ */
 function renderHist(){
   const h=store.get("history",[]),g=store.get("gameLog",[]);
-  let html="";
-  if(!h.length)html+=`<div class="panel"><p>No screenings yet.</p><button class="btn" data-go="screen">Start screening</button></div>`;
-  else html+=`<div class="panel"><h2>Screenings</h2><table><tr><th>Date</th><th>Risk level</th><th>Pattern</th></tr>${h.slice().reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.t||""} (${x.p.toFixed(2)})</td><td>${x.high?"Higher":"Lower"}</td></tr>`).join("")}</table></div>`;
-  if(g.length)html+=`<div class="panel"><h2>Game scores</h2><table><tr><th>Date</th><th>Game</th><th>Result</th></tr>${g.slice(-10).reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.g}</td><td>${x.r}</td></tr>`).join("")}</table></div>`;
-  if(h.length||g.length)html+=`<div class="row"><button class="btn alt" id="clr">Clear my data</button></div>`;
+  let html=`<p class="muted">Showing results for: <b>${esc(prof||"Myself")}</b></p>`+dashHTML();
+  if(!h.length)html+=`<div class="panel"><p>No screenings yet for this person.</p><button class="btn" data-go="screen">Start screening</button></div>`;
+  else{
+    html+=`<div class="panel"><h2>Risk score over time</h2>${chart(h.slice(-8).map(x=>({x:sd(x.d),y:x.p})),{min:0,max:1,line:HIGH_CUTOFF,fmt:v=>v.toFixed(1)})}<p class="muted">Dashed line: high-risk cutoff (0.5). Lower is better.</p></div>`;
+    html+=`<div class="panel"><h2>Screenings</h2><table><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.slice().reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.t||""}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table></div>`;
+  }
+  const mm=g.filter(x=>x.g==="Memory match"&&x.v!=null).slice(-8),ss=g.filter(x=>x.g==="Stroop"&&x.v!=null).slice(-8);
+  if(mm.length)html+=`<div class="panel"><h2>Memory match: moves</h2>${chart(mm.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...mm.map(x=>x.v))+2),fmt:v=>Math.round(v)})}<p class="muted">Fewer moves is better.</p></div>`;
+  if(ss.length)html+=`<div class="panel"><h2>Color word test: average seconds</h2>${chart(ss.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...ss.map(x=>x.v))+1),fmt:v=>v.toFixed(1)})}<p class="muted">Faster is better.</p></div>`;
+  if(h.length||g.length)html+=`<div class="row"><button class="btn" id="rep2">Download doctor report</button><button class="btn alt" id="clr">Clear this person's data</button></div>`;
   $("hist").innerHTML=html;
-  const c=$("clr");if(c)c.onclick=()=>{store.set("history",[]);store.set("gameLog",[]);store.set("mode",null);renderHist()};
+  const c=$("clr");if(c)c.onclick=()=>{store.set("history",[]);store.set("gameLog",[]);store.set("mode",null);renderHist();updateBadge()};
+  const r2=$("rep2");if(r2)r2.onclick=printReport;
 }
-function logGame(g,r){const l=store.get("gameLog",[]);l.push({d:new Date().toISOString(),g,r});store.set("gameLog",l)}
+function logGame(g,r,v){const l=store.get("gameLog",[]);l.push({d:new Date().toISOString(),g,r,v});store.set("gameLog",l)}
 
 /* ============ GAMES ============ */
 function gamesInit(){
@@ -263,7 +367,7 @@ function newMemory(){
       if(!mFirst){mFirst=b;return}
       mMoves++;$("mstat").textContent="Moves: "+mMoves;
       if(mFirst.dataset.s===s){mFirst.className=b.className="card done";mFirst=null;
-        if(--mLeft===0){$("mstat").textContent=`Done in ${mMoves} moves. Fewer moves is better.`;logGame("Memory match",mMoves+" moves")}}
+        if(--mLeft===0){$("mstat").textContent=`Done in ${mMoves} moves. Fewer moves is better.`;logGame("Memory match",mMoves+" moves",mMoves)}}
       else{mLock=true;const a=mFirst;mFirst=null;setTimeout(()=>{[a,b].forEach(x=>{x.className="card";x.textContent="";x.setAttribute("aria-label","Hidden card")});mLock=false},900)}
     };
     g.appendChild(b);
@@ -279,13 +383,71 @@ $("snew").onclick=()=>{sRound=0;sOk=0;sTimes=[];sOn=true;sNext()};
 function sNext(){
   if(sRound>=10){sOn=false;const avg=sTimes.reduce((a,b)=>a+b,0)/sTimes.length/1000;
     $("sword").textContent="Done";$("sword").style.color="";
-    const r=`${sOk}/10 correct, ${avg.toFixed(1)}s average`;$("sstat").textContent=r;logGame("Stroop",r);return}
+    const r=`${sOk}/10 correct, ${avg.toFixed(1)}s average`;$("sstat").textContent=r;logGame("Stroop",r,+avg.toFixed(2));return}
   const w=COL[Math.floor(Math.random()*4)][0];
   let ink;do{ink=COL[Math.floor(Math.random()*4)]}while(Math.random()<.85&&ink[0]===w);
   sCur=ink[0];$("sword").textContent=w;$("sword").style.color=ink[1];
   $("sstat").textContent=`Round ${sRound+1} of 10`;sT0=performance.now();
 }
 function sAnswer(n){if(!sOn)return;sTimes.push(performance.now()-sT0);if(n===sCur)sOk++;sRound++;sNext()}
+
+/* ============ LOGIN (local to this browser) ============ */
+let amode="in";
+const hx=u8=>[...u8].map(x=>x.toString(16).padStart(2,"0")).join("");
+async function hashPw(pw,salt){const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(salt+pw));return hx(new Uint8Array(d))}
+function aerr(m){$("aerr").textContent=m}
+function setMode(m){amode=m;$("asubmit").textContent=m==="in"?"Log in":"Create account";$("tabin").className="btn"+(m==="in"?"":" alt");$("tabup").className="btn"+(m==="up"?"":" alt");$("pw").autocomplete=m==="in"?"current-password":"new-password";aerr("")}
+$("tabin").onclick=()=>setMode("in");$("tabup").onclick=()=>setMode("up");
+$("pw").addEventListener("keydown",e=>{if(e.key==="Enter")$("asubmit").click()});
+function renderUser(){$("authbtn").textContent=cur?"Log out ("+cur+")":"Log in";renderWho();updateBadge()}
+function login(u){cur=u;prof="";store.set("session",u);$("pw").value="";renderUser();const t=pending||"screen";pending=null;go(t)}
+function logout(){cur=null;prof="";store.set("session",null);renderUser();go("home")}
+$("authbtn").onclick=()=>{if(cur)logout();else{pending=null;go("auth")}};
+$("asubmit").onclick=async()=>{
+  const u=$("un").value.trim().toLowerCase(),pw=$("pw").value;
+  if(!/^[a-z0-9_.-]{3,20}$/.test(u))return aerr("Username: 3 to 20 letters or numbers.");
+  if(pw.length<6)return aerr("Password must be at least 6 characters.");
+  if(!(window.crypto&&crypto.subtle))return aerr("This browser can't secure passwords here. Open the site over https.");
+  const users=store.get("users",{});
+  if(amode==="up"){
+    if(users[u])return aerr("That username is taken.");
+    const salt=hx(crypto.getRandomValues(new Uint8Array(8)));
+    users[u]={salt,hash:await hashPw(pw,salt)};store.set("users",users);
+  }else{
+    const r=users[u];
+    if(!r||r.hash!==await hashPw(pw,r.salt))return aerr("Wrong username or password.");
+  }
+  login(u);
+};
+{const sv=store.get("session",null);if(sv&&store.get("users",{})[sv])cur=sv;renderUser()}
+
+/* ============ CAREGIVER: PEOPLE ============ */
+function renderWho(){
+  $("who").classList.toggle("hidden",!cur);if(!cur)return;
+  $("whoSel").innerHTML=['<option value="">Myself</option>',...store.get("profiles",[]).map(n=>`<option value="${esc(n)}">${esc(n)}</option>`)].join("");
+  $("whoSel").value=prof;
+}
+function switchPerson(){$("intro").classList.remove("hidden");$("quiz").classList.add("hidden");$("res").classList.add("hidden");updateBadge();go(curSec)}
+$("whoSel").onchange=()=>{prof=$("whoSel").value;switchPerson()};
+$("addP").onclick=()=>{
+  const n=(prompt("Name of the person you are screening (for example, Mom)")||"").trim().slice(0,30);
+  if(!n||n.includes("|")||n.toLowerCase()==="myself")return;
+  const ps=store.get("profiles",[]);if(!ps.includes(n)){ps.push(n);store.set("profiles",ps)}
+  prof=n;renderWho();switchPerson();
+};
+
+/* ============ ACCESSIBILITY ============ */
+const A=store.get("a11y",{s:100,hc:false});
+function applyA(){document.documentElement.style.fontSize=A.s+"%";document.documentElement.classList.toggle("hc",A.hc);$("hcb").setAttribute("aria-pressed",String(A.hc));store.set("a11y",A)}
+$("fsm").onclick=()=>{A.s=Math.max(85,A.s-10);applyA()};
+$("fsp").onclick=()=>{A.s=Math.min(160,A.s+10);applyA()};
+$("hcb").onclick=()=>{A.hc=!A.hc;applyA()};
+$("tts").onclick=()=>{
+  const ss=window.speechSynthesis;if(!ss)return;if(ss.speaking){ss.cancel();return}
+  const el=[...document.querySelectorAll("main > section")].find(x=>!x.classList.contains("hidden"));
+  const u=new SpeechSynthesisUtterance(el?el.innerText:"");u.rate=.9;ss.speak(u);
+};
+applyA();renderUser();
 
 go("home");
 </script>
