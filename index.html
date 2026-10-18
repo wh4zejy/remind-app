@@ -3,179 +3,584 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<meta name="description" content="ReMind is a free, private, 5-minute early screening for Alzheimer's disease, with brain games, progress tracking, and a doctor-ready report.">
 <title>ReMind – Early Alzheimer's Screening</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap">
 <style>
-:root{--bg:#fff;--surface:#fff;--ink:#16162a;--muted:#6b6f85;--line:#e4e4f0;--teal:#5850ec;--teal-ink:#fff;--grad:linear-gradient(90deg,#4f46e5,#a855f7);--amber:#b4531a;--amber-bg:#fbeee3;--ok-bg:#eef0ff;--shadow:0 12px 40px rgba(88,80,236,.13);
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1020;--surface:#191a33;--ink:#eceefc;--muted:#a3a7c4;--line:#2d2f55;--teal:#8b84ff;--teal-ink:#0f1020;--ok-bg:#222552;--amber:#f0a272;--amber-bg:#3a2a20;--shadow:none}}
-:root[data-theme="dark"]{--bg:#0f1020;--surface:#191a33;--ink:#eceefc;--muted:#a3a7c4;--line:#2d2f55;--teal:#8b84ff;--teal-ink:#0f1020;--ok-bg:#222552;--amber:#f0a272;--amber-bg:#3a2a20;--shadow:none}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+/* ============ TOKENS ============ */
+:root{
+  --bg:#f6f6fc;--surface:#fff;--surface-2:#f1f1fa;--ink:#13132b;--ink-2:#3a3c5e;--muted:#676b8a;--line:#e2e3f1;
+  --brand:#5848ec;--brand-ink:#fff;--on-grad:#fff;--brand-soft:#eeedff;--ring:rgba(88,72,236,.18);
+  --grad:linear-gradient(125deg,#4f46e5 0%,#7c3aed 55%,#c026d3 100%);
+  --ok:#0e9670;--ok-soft:#e2f6ee;--mid:#b26d0c;--mid-soft:#fdf3df;--warn:#cc4f12;--warn-soft:#fdebdf;
+  --shadow-sm:0 1px 2px rgba(19,19,60,.05),0 2px 8px rgba(19,19,60,.04);
+  --shadow:0 1px 2px rgba(19,19,60,.04),0 14px 34px -10px rgba(64,52,190,.18);
+  --shadow-lg:0 30px 60px -22px rgba(64,52,190,.38);
+  --glass:rgba(255,255,255,.74);
+  --blob1:rgba(124,58,237,.16);--blob2:rgba(56,189,248,.14);--blob3:rgba(236,72,153,.10);
+  --r:22px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b0c1c;--surface:#14152b;--surface-2:#1b1d39;--ink:#eef0ff;--ink-2:#c6c9e8;--muted:#9a9fc4;--line:#292b50;
+  --brand:#a39bff;--brand-ink:#0b0c1c;--brand-soft:rgba(163,155,255,.14);--ring:rgba(163,155,255,.25);
+  --ok:#3ddba6;--ok-soft:rgba(61,219,166,.12);--mid:#f6c453;--mid-soft:rgba(246,196,83,.12);--warn:#ff9a5c;--warn-soft:rgba(255,154,92,.13);
+  --shadow-sm:none;--shadow:0 20px 40px -24px rgba(0,0,0,.7);--shadow-lg:0 30px 60px -20px rgba(0,0,0,.8);
+  --glass:rgba(11,12,28,.74);--blob1:rgba(124,58,237,.22);--blob2:rgba(56,189,248,.10);--blob3:rgba(236,72,153,.08)}}
+:root[data-theme="dark"]{
+  --bg:#0b0c1c;--surface:#14152b;--surface-2:#1b1d39;--ink:#eef0ff;--ink-2:#c6c9e8;--muted:#9a9fc4;--line:#292b50;
+  --brand:#a39bff;--brand-ink:#0b0c1c;--brand-soft:rgba(163,155,255,.14);--ring:rgba(163,155,255,.25);
+  --ok:#3ddba6;--ok-soft:rgba(61,219,166,.12);--mid:#f6c453;--mid-soft:rgba(246,196,83,.12);--warn:#ff9a5c;--warn-soft:rgba(255,154,92,.13);
+  --shadow-sm:none;--shadow:0 20px 40px -24px rgba(0,0,0,.7);--shadow-lg:0 30px 60px -20px rgba(0,0,0,.8);
+  --glass:rgba(11,12,28,.74);--blob1:rgba(124,58,237,.22);--blob2:rgba(56,189,248,.10);--blob3:rgba(236,72,153,.08)}
+:root.hc{--bg:#000;--surface:#000;--surface-2:#111;--ink:#fff;--ink-2:#fff;--muted:#e6e6e6;--line:#fff;--brand:#ffe04d;--brand-ink:#000;--on-grad:#000;--brand-soft:#222;--ring:rgba(255,224,77,.5);
+  --grad:linear-gradient(#ffe04d,#ffe04d);--ok:#7dffc4;--ok-soft:#111;--mid:#ffe04d;--mid-soft:#111;--warn:#ffb27a;--warn-soft:#111;--shadow-sm:none;--shadow:none;--shadow-lg:none;--glass:#000;--blob1:transparent;--blob2:transparent;--blob3:transparent}
+
+/* ============ BASE ============ */
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:1.125rem/1.55 "Plus Jakarta Sans",system-ui,sans-serif}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
-.logo{display:flex;align-items:center;font-weight:800;font-size:1.25rem}
-.mark{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;margin-right:10px;font-size:1.4rem;line-height:1}
-nav{align-items:center}
-nav button[aria-current="page"]{color:var(--teal);border-color:transparent;font-weight:800}
-.btn.pill{border-radius:999px;padding:9px 20px;font-size:.95rem}
-nav{display:flex;gap:6px;flex-wrap:wrap}
-nav button{background:none;border:2px solid transparent;color:var(--ink);font:inherit;padding:6px 14px;border-radius:8px;cursor:pointer}
-nav button[aria-current="page"]{border-color:var(--teal);font-weight:700}
-button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
-main{max-width:760px;margin:0 auto;padding:28px 20px 60px}
-h1{font-size:2.1rem;line-height:1.2;margin:0 0 12px}
-h2{font-size:1.4rem;margin:0 0 10px}
-p{margin:0 0 14px;max-width:62ch}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:90px}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:1.125rem/1.6 "Plus Jakarta Sans",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom,0px)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(50vmax 40vmax at 8% -5%,var(--blob1),transparent 62%),radial-gradient(40vmax 34vmax at 100% 10%,var(--blob2),transparent 60%),radial-gradient(40vmax 30vmax at 55% 110%,var(--blob3),transparent 60%)}
+h1,h2,h3{letter-spacing:-.02em;line-height:1.2}
+h2{font-size:1.35rem;margin:0 0 10px}
+h3{font-size:1.1rem;margin:0 0 6px}
+p{margin:0 0 14px;max-width:64ch}
+a{color:var(--brand)}
+svg{flex:none}
 .muted{color:var(--muted);font-size:.95rem}
-.btn{background:var(--teal);box-shadow:0 4px 14px rgba(88,80,236,.25);color:var(--teal-ink);border:0;border-radius:10px;padding:12px 22px;font:inherit;font-weight:700;cursor:pointer}
-.btn.alt{background:none;color:var(--ink);border:2px solid var(--line);box-shadow:none}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px;margin:18px 0;box-shadow:var(--shadow)}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .hidden{display:none!important}
-.opts{display:grid;gap:10px;margin-top:14px}
-.opts button{font-weight:500;text-align:left;background:var(--bg);border:2px solid var(--line);color:var(--ink);border-radius:10px;padding:12px 16px;font:inherit;cursor:pointer}
-.opts button:hover{border-color:var(--teal)}
-.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 18px}
-.bar i{display:block;height:100%;background:var(--grad);transition:width .3s}
-input[type=number]:focus,select:focus{border-color:var(--teal)}
-input[type=number],select{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:120px}
-.result{border-left:8px solid var(--teal);background:var(--ok-bg)}
-.result.high{border-color:var(--amber);background:var(--amber-bg)}
-.big{font-size:3rem;font-weight:700;line-height:1}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:400px}
-.card{aspect-ratio:1;font-size:2rem;background:var(--teal);color:var(--teal-ink);border:0;border-radius:10px;cursor:pointer}
-.card.up{background:var(--surface);color:var(--ink);border:2px solid var(--teal)}
-.card.done{background:var(--ok-bg);color:var(--ink);border:2px solid var(--ok-bg)}
-.stroop{font-size:3.4rem;font-weight:700;text-align:center;margin:20px 0}
-.cols{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.cols button{min-width:100px}
-table{border-collapse:collapse;width:100%}
-td,th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
 .gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.ctitle{text-align:center;font-size:2rem;font-weight:800;margin:20px 0 26px}
-.cat{font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-top:6px}
-.foot{font-size:.75rem;color:var(--muted);text-align:center;margin:18px 0 0}
-#screen{max-width:560px;margin:0 auto}
-h1{font-weight:800}
-#auth{max-width:460px;margin:0 auto}
-#auth input{width:100%;font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
-#auth input:focus{border-color:var(--teal)}
-.a11y{display:flex;gap:6px;justify-content:flex-end;align-items:center;padding:6px 20px;background:var(--ok-bg);font-size:.8rem;flex-wrap:wrap}
-.a11y button{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:3px 10px;cursor:pointer}
-:root.hc{--bg:#000;--surface:#000;--ink:#fff;--muted:#e6e6e6;--line:#fff;--teal:#ffe04d;--teal-ink:#000;--ok-bg:#1a1a1a;--amber:#ffb27a;--amber-bg:#222;--grad:linear-gradient(90deg,#ffe04d,#ffe04d);--shadow:none}
-.who{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--line);font-size:.9rem}
-.who select{width:auto;padding:6px 10px}
-.fb{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:.9rem}
-.fb .l{flex:0 0 46%}
-.fb .tr{flex:1;height:12px;background:var(--line);border-radius:6px;position:relative}
-.fb .tr::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--ink)}
+.serif{font-family:"Fraunces",Georgia,serif;font-weight:700}
+.reading{background:var(--brand-soft);box-shadow:0 0 0 6px var(--brand-soft);border-radius:8px;transition:background .2s}
+.anim{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pop{0%{transform:rotateY(180deg) scale(1)}50%{transform:rotateY(180deg) scale(1.08)}100%{transform:rotateY(180deg) scale(1)}}
+
+/* ============ A11Y BAR + HEADER ============ */
+.a11y{display:flex;gap:6px;justify-content:flex-end;align-items:center;flex-wrap:wrap;padding:7px max(16px,calc((100% - 1120px)/2));padding-top:max(7px,env(safe-area-inset-top));background:var(--surface-2);border-bottom:1px solid var(--line);font-size:.8rem;color:var(--muted)}
+.a11y .lbl{margin-right:auto;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.a11y .lbl svg{width:16px;height:16px;color:var(--brand)}
+.a11y button{font:inherit;font-weight:700;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:border-color .15s,color .15s,background .15s}
+.a11y button svg{width:15px;height:15px}
+.a11y button:hover{border-color:var(--brand);color:var(--brand)}
+.a11y button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px max(16px,calc((100% - 1120px)/2));border-bottom:1px solid var(--line)}
+/* blur lives on a pseudo-element: backdrop-filter on header itself would trap the fixed mobile nav inside it */
+header::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--glass);backdrop-filter:saturate(180%) blur(18px);-webkit-backdrop-filter:saturate(180%) blur(18px)}
+.logo{display:flex;align-items:center;gap:10px;font:800 1.25rem/1 "Plus Jakarta Sans",sans-serif;letter-spacing:-.03em;color:var(--ink);background:none;border:0;cursor:pointer;padding:0}
+.logo svg{width:36px;height:36px;border-radius:11px;box-shadow:0 8px 18px -6px rgba(88,72,236,.6)}
+.nav{display:flex;gap:4px;align-items:center;background:var(--surface-2);border:1px solid var(--line);padding:4px;border-radius:999px}
+.nl{display:inline-flex;align-items:center;gap:8px;background:none;border:0;color:var(--ink-2);font:inherit;font-size:.92rem;font-weight:700;padding:8px 16px;border-radius:999px;cursor:pointer;position:relative;transition:color .2s,background .2s,box-shadow .2s}
+.nl svg{width:18px;height:18px}
+.nl:hover{color:var(--ink)}
+.nl[aria-current="page"]{background:var(--surface);color:var(--brand);box-shadow:var(--shadow-sm)}
+:root.hc .nl[aria-current="page"]{outline:2px solid var(--brand)}
+.badge{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--warn);color:#fff;font-size:.72rem;font-weight:800;display:inline-grid;place-items:center;line-height:1}
+:root.hc .badge{color:#000}
+.who{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px max(16px,calc((100% - 1120px)/2));font-size:.9rem;font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--line);background:var(--surface)}
+.who svg{width:18px;height:18px;color:var(--brand)}
+.who select{width:auto;padding:7px 36px 7px 12px;font-size:.9rem}
+
+/* ============ BUTTONS + FORMS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--grad);color:var(--on-grad);border:0;border-radius:14px;padding:14px 24px;font:inherit;font-weight:700;font-size:1rem;line-height:1.2;cursor:pointer;text-decoration:none;box-shadow:0 10px 22px -8px rgba(88,72,236,.6),inset 0 1px 0 rgba(255,255,255,.22);transition:transform .15s,box-shadow .2s,border-color .15s,color .15s}
+.btn svg{width:18px;height:18px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 14px 28px -8px rgba(88,72,236,.65),inset 0 1px 0 rgba(255,255,255,.22)}
+.btn:active{transform:scale(.98)}
+.btn.alt{background:var(--surface);color:var(--ink);border:1.5px solid var(--line);box-shadow:var(--shadow-sm)}
+.btn.alt:hover{border-color:var(--brand);color:var(--brand)}
+.btn.ghost{background:none;box-shadow:none;color:var(--ink-2);padding:10px 12px}
+.btn.ghost:hover{color:var(--brand)}
+.btn.sm{padding:9px 18px;font-size:.9rem;border-radius:999px}
+.btn.lg{padding:17px 30px;font-size:1.08rem;border-radius:16px}
+.btn.block{width:100%}
+:root.hc .btn{box-shadow:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.row.end{justify-content:flex-end}
+.field{margin:0 0 18px}
+.field label{display:block;font-weight:700;font-size:.92rem;margin-bottom:7px}
+.field .hint{font-weight:500;color:var(--muted)}
+input[type=number],input[type=text],input[type=password],select{width:100%;font:inherit;font-size:1.05rem;padding:13px 16px;border:1.5px solid var(--line);border-radius:13px;background:var(--surface-2);color:var(--ink);transition:border-color .15s,box-shadow .15s,background .15s}
+select{appearance:none;-webkit-appearance:none;padding-right:42px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+input:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px var(--ring);background-color:var(--surface)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.err{color:var(--warn);font-weight:600;font-size:.92rem;min-height:1px;margin:0}
+.err:empty{display:none}
+.foot{font-size:.78rem;color:var(--muted);text-align:center;margin:18px auto 0}
+
+/* ============ LAYOUT ============ */
+main{max-width:1120px;margin:0 auto;padding:26px 20px 70px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;margin:18px 0;box-shadow:var(--shadow)}
+.narrow{max-width:640px;margin:0 auto}
+.xnarrow{max-width:460px;margin:0 auto}
+.ctitle{text-align:center;font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:clamp(2rem,4.4vw,2.8rem);margin:22px 0 8px}
+.csub{text-align:center;color:var(--muted);margin:0 auto 24px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:.78rem;font-weight:800;letter-spacing:.02em}
+.kicker{font-size:.78rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand)}
+
+/* ============ HOME ============ */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;padding:34px 0 20px}
+.eyebrow{display:inline-flex;gap:10px;align-items:center;padding:5px 14px 5px 5px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.85rem;font-weight:600;color:var(--ink-2);box-shadow:var(--shadow-sm)}
+.eyebrow b{background:var(--grad);color:var(--on-grad);padding:3px 10px;border-radius:999px;font-size:.74rem}
+.display{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:clamp(2.5rem,5.6vw,4.2rem);line-height:1.04;letter-spacing:-.03em;margin:22px 0 18px}
+.lead{font-size:1.2rem;color:var(--ink-2);max-width:52ch}
+.trust{display:flex;gap:10px 22px;flex-wrap:wrap;margin-top:28px;color:var(--muted);font-size:.88rem;font-weight:600}
+.trust span{display:inline-flex;align-items:center;gap:7px}
+.trust svg{width:18px;height:18px;color:var(--ok)}
+.visual{position:relative;padding:30px 20px}
+.mock{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:26px;box-shadow:var(--shadow-lg);max-width:380px;margin:0 auto}
+.mock .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.mock .ring{display:flex;align-items:center;gap:20px}
+.mock .ring .g{position:relative;width:118px;height:118px}
+.mock .ring .g b{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-size:1.7rem;font-weight:800;line-height:1}
+.mock .ring .g b small{display:block;font-size:.66rem;color:var(--muted);font-weight:600;margin-top:4px}
+.mock .spark{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.mock .spark svg{width:100%;height:60px}
+.fchip{position:absolute;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 14px;box-shadow:var(--shadow);font-size:.85rem;font-weight:700;animation:float 6s ease-in-out infinite}
+.fchip i{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-style:normal;font-size:1rem}
+.fchip.a{top:0;left:-4px}.fchip.b{bottom:4px;right:-4px;animation-delay:-3s}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:34px 0 10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow-sm)}
+.stat b{display:block;font-size:2rem;font-weight:800;letter-spacing:-.04em;line-height:1.1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{font-size:.88rem;color:var(--muted);font-weight:600}
+.sh{text-align:center;margin:72px auto 28px;max-width:640px}
+.sh h2{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:clamp(1.8rem,3.6vw,2.5rem);margin:10px 0}
+.sh p{margin:0 auto;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step,.feat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s}
+.step:hover,.feat:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.step .n{width:42px;height:42px;border-radius:13px;background:var(--grad);color:var(--on-grad);display:grid;place-items:center;font-weight:800;margin-bottom:16px}
+.step p,.feat p{color:var(--muted);font-size:.98rem;margin:0}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat .ic{width:46px;height:46px;border-radius:14px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin-bottom:16px}
+.feat .ic svg{width:24px;height:24px}
+.callout{margin-top:72px;border-radius:28px;padding:44px;background:var(--grad);color:var(--on-grad);display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:center;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.callout::after{content:"";position:absolute;width:360px;height:360px;right:-90px;top:-120px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 65%);pointer-events:none}
+.callout h2{font-family:"Fraunces",Georgia,serif;font-size:clamp(1.7rem,3.4vw,2.3rem);margin:8px 0 12px}
+.callout p{opacity:.92}
+.callout ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.callout li{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);padding:12px 16px;border-radius:14px;font-weight:700}
+.callout li svg{width:20px;height:20px}
+.callout .btn{background:#fff;color:#4338ca;box-shadow:none}
+:root.hc .callout .btn{background:#000;color:#ffe04d}
+:root.hc .callout li{border-color:#000;background:transparent}
+.note{display:flex;gap:14px;align-items:flex-start;font-size:.92rem;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin:40px auto 0;max-width:820px}
+.note svg{width:22px;height:22px;color:var(--brand);margin-top:2px}
+.note p{margin:0;max-width:none}
+.sitefoot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
+.sitefoot b{color:var(--ink)}
+
+/* ============ QUIZ ============ */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.qcount{font-weight:700;color:var(--muted);font-size:.9rem}
+.bar{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin:16px 0 28px}
+.bar i{display:block;height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.qrow{display:flex;gap:16px;align-items:flex-start}
+#qtext{font-size:clamp(1.3rem,2.8vw,1.65rem);line-height:1.35;margin:0;flex:1}
+.icon-btn{flex:none;width:48px;height:48px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--brand);display:grid;place-items:center;cursor:pointer;transition:background .15s,border-color .15s}
+.icon-btn svg{width:22px;height:22px}
+.icon-btn:hover{border-color:var(--brand)}
+.icon-btn.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.opts{display:grid;gap:10px;margin-top:24px}
+.opts.yn{grid-template-columns:1fr 1fr}
+.opt{display:flex;align-items:center;gap:14px;text-align:left;background:var(--surface);border:1.5px solid var(--line);color:var(--ink);border-radius:16px;padding:17px 18px;font:inherit;font-weight:700;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s,background .15s}
+.opt .k{width:30px;height:30px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;font-size:.8rem;color:var(--muted);font-weight:800;flex:none}
+.opt .dots{margin-left:auto;display:flex;gap:4px}
+.opt .dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.opt .dots i.f{background:var(--brand)}
+.opt:hover{border-color:var(--brand);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.opt.sel .k{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.opt.reading{box-shadow:0 0 0 4px var(--ring)}
+.qfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px}
+.kbd{font-size:.8rem;color:var(--muted)}
+.kbd kbd{font:inherit;font-weight:700;padding:1px 7px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;background:var(--surface-2)}
+
+/* ============ RESULT ============ */
+.res{border-top:6px solid var(--c);--c:var(--brand);--cs:var(--brand-soft)}
+.res.ok{--c:var(--ok);--cs:var(--ok-soft)}.res.mid{--c:var(--mid);--cs:var(--mid-soft)}.res.warn{--c:var(--warn);--cs:var(--warn-soft)}
+.result{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
+.gauge{position:relative;width:176px;height:176px}
+.gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gauge .trk{fill:none;stroke:var(--surface-2);stroke-width:14}
+.gauge .val{fill:none;stroke:var(--c);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1)}
+.gauge .c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.gauge .c b{font-size:2.6rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+.gauge .c span{font-size:.75rem;color:var(--muted);font-weight:700;margin-top:4px}
+.lp{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:800;background:var(--cs,var(--brand-soft));color:var(--c,var(--brand))}
+.lp.ok{--c:var(--ok);--cs:var(--ok-soft)}.lp.mid{--c:var(--mid);--cs:var(--mid-soft)}.lp.warn{--c:var(--warn);--cs:var(--warn-soft)}
+.tierh{font-family:"Fraunces",Georgia,serif;font-size:clamp(1.8rem,4vw,2.4rem);margin:12px 0 10px}
+.alertbox{display:flex;gap:12px;background:var(--mid-soft);border-radius:14px;padding:14px 16px;margin:18px 0 0;font-size:.97rem}
+.alertbox p{margin:0}
+.alertbox svg{width:22px;height:22px;color:var(--mid);margin-top:2px}
+.chip svg{width:14px;height:14px}
+.divider{height:1px;background:var(--line);margin:26px 0 20px}
+.fb{display:flex;align-items:center;gap:14px;margin:10px 0;font-size:.92rem;font-weight:600}
+.fb .l{flex:0 0 42%}
+.fb .tr{flex:1;height:12px;background:var(--surface-2);border-radius:6px;position:relative}
+.fb .tr::before{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;background:var(--muted);border-radius:2px}
 .fb .tr i{position:absolute;top:0;height:100%;border-radius:6px}
-.up{background:var(--amber)}.dn{background:var(--teal)}
-.chart{width:100%;height:auto;margin:6px 0}
+.fu{background:var(--warn)}.fd{background:var(--ok)}
+.legend{display:flex;gap:16px;font-size:.82rem;color:var(--muted);font-weight:600;margin:4px 0 8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px}
+
+/* ============ GAMES ============ */
+.games{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.ghead{display:flex;gap:14px;align-items:center;margin-bottom:6px}
+.ghead .ic{width:48px;height:48px;border-radius:14px;background:var(--brand-soft);display:grid;place-items:center;font-size:1.5rem}
+.ghead h2{margin:0}
+.ghead p{margin:0}
+.planbox{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 18px;font-weight:600;color:var(--ink-2)}
+.planbox svg{width:22px;height:22px;color:var(--brand)}
+.planbox p{margin:0}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:400px;margin:22px auto 0;perspective:1000px}
+.card{aspect-ratio:1;border:0;padding:0;background:none;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1);border-radius:14px}
+.card .f{position:absolute;inset:0;border-radius:14px;display:grid;place-items:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;font-size:clamp(1.5rem,5vw,2.1rem)}
+.card .fr{background:var(--grad);color:rgba(255,255,255,.55);font-size:1.1rem;box-shadow:0 8px 16px -8px rgba(88,72,236,.7)}
+.card:hover .fr{filter:brightness(1.08)}
+.card .bk{background:var(--surface);border:2px solid var(--brand);transform:rotateY(180deg)}
+.card.up,.card.done{transform:rotateY(180deg)}
+.card.done .bk{background:var(--ok-soft);border-color:var(--ok)}
+.card.done{animation:pop .4s ease}
+:root.hc .card .fr{color:#000}
+.gstat{text-align:center;font-weight:700;color:var(--ink-2);margin:16px 0 0}
+.stroop{font-size:clamp(2.8rem,9vw,4.2rem);font-weight:800;text-align:center;margin:22px 0 18px;padding:34px 10px;border-radius:20px;background:#fff;border:1px solid var(--line);letter-spacing:-.02em;line-height:1.1;color:#13132b}
+.cols{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.cols .btn{padding:15px}
+
+/* ============ TRACK ============ */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-sm)}
+.kpi>span{display:block;font-size:.8rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kpi b{display:block;font-size:1.6rem;font-weight:800;letter-spacing:-.03em;margin-top:4px}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.twocol .panel{margin:0}
+.tw{overflow-x:auto;margin:0 -4px;padding:0 4px}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+td,th{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
+tr:last-child td{border-bottom:0}
+.chart{width:100%;height:auto;margin:6px 0;display:block}
+.empty{text-align:center;padding:26px 10px;color:var(--muted)}
+.empty .big{font-size:2.6rem;margin-bottom:6px}
+.phead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+
+/* ============ AUTH ============ */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface-2);border:1px solid var(--line);padding:4px;border-radius:14px;margin-bottom:22px}
+.seg button{font:inherit;font-weight:700;font-size:.95rem;border:0;background:none;color:var(--muted);padding:10px;border-radius:10px;cursor:pointer;transition:.15s}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm)}
+:root.hc .seg button.on{outline:2px solid var(--brand)}
+
+/* ============ OVERLAYS ============ */
+.ttsbar{position:fixed;right:20px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 18px;border-radius:999px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-lg);font-weight:700;font-size:.92rem;animation:rise .3s both}
+.eq{display:flex;gap:3px;align-items:flex-end;height:16px}
+.eq i{width:3px;height:6px;background:var(--brand);border-radius:2px;animation:eq 1s infinite ease-in-out}
+.eq i:nth-child(2){animation-delay:-.35s}.eq i:nth-child(3){animation-delay:-.7s}
+@keyframes eq{0%,100%{height:4px}50%{height:16px}}
+.toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--bg);padding:13px 20px;border-radius:14px;font-weight:600;font-size:.95rem;box-shadow:var(--shadow-lg);transition:opacity .25s,transform .25s;z-index:60;max-width:calc(100% - 32px);pointer-events:none;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+dialog{border:1px solid var(--line);border-radius:24px;padding:28px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow-lg);width:min(440px,calc(100% - 32px))}
+dialog::backdrop{background:rgba(10,10,30,.45);backdrop-filter:blur(4px)}
+dialog h2{margin-top:0}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:960px){
+  .hero{grid-template-columns:1fr;gap:20px;padding-top:16px}
+  .visual{max-width:440px;margin:0 auto;width:100%}
+  .feats{grid-template-columns:1fr 1fr}
+  .callout{grid-template-columns:1fr;padding:32px}
+  .games,.twocol{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  body{font-size:1.0625rem}
+  .a11y .lbl span{display:none}
+  .nav{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));justify-content:space-around;z-index:30;background:var(--glass);backdrop-filter:saturate(180%) blur(18px);-webkit-backdrop-filter:saturate(180%) blur(18px);box-shadow:var(--shadow-lg);border-radius:22px;padding:6px}
+  .nl{flex-direction:column;gap:3px;font-size:.7rem;padding:8px 4px;flex:1;border-radius:16px}
+  .nl svg{width:22px;height:22px}
+  .nl .badge{position:absolute;top:3px;left:calc(50% + 6px);min-width:18px;height:18px;font-size:.66rem}
+  main{padding:18px 16px 130px}
+  .panel{padding:22px}
+  .stats{grid-template-columns:1fr 1fr}
+  .steps,.feats{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr}
+  .kpis .kpi:first-child{grid-column:1/-1}
+  .result{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .result p{margin-left:auto;margin-right:auto}
+  .ttsbar{left:16px;right:16px;bottom:calc(104px + env(safe-area-inset-bottom,0px));justify-content:space-between}
+  .toast{bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+  .fchip{display:none}
+  .fb .l{flex-basis:46%}
+  .kbd{display:none}
+}
+@media (max-width:420px){.two{grid-template-columns:1fr}.opts.yn{grid-template-columns:1fr}}
+
 #report{display:none}
-@media print{body{background:#fff!important}body>*:not(#report){display:none!important}#report{display:block!important;color:#000;background:#fff;font-size:12pt}#report table{width:100%}}
-.note{font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:30px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{body{background:#fff!important}body::before{display:none}body>*:not(#report){display:none!important}#report{display:block!important;color:#000;background:#fff;font-size:12pt}#report table{width:100%}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
-<div class="a11y" role="toolbar" aria-label="Accessibility options"><span>Accessibility:</span><button id="fsm" aria-label="Smaller text">A−</button><button id="fsp" aria-label="Larger text">A+</button><button id="hcb" aria-pressed="false">High contrast</button><button id="tts">Read page aloud</button></div>
+
+<!-- Inline icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset=".6" stop-color="#7c3aed"/><stop offset="1" stop-color="#c026d3"/></linearGradient>
+  </defs>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 3h6v3H9z"/><path d="m9 13 2 2 4-4"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="11" rx="5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="13.8" r=".6" fill="currentColor"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16h16"/><path d="m8 15 3.5-4 3 3L20 8"/></symbol>
+  <symbol id="i-speak" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.2a6.4 6.4 0 0 1 3.5 5.8"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h12v2M10 5v14M7 19h6"/><path d="M15 13v-1h6v1M18 12v7M16.5 19h3"/></symbol>
+  <symbol id="i-contrast" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></symbol>
+  <symbol id="i-a11y" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><path d="M5 8.5l7 1.5 7-1.5M12 10v4.5m0 0-3 6m3-6 3 6"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v6c0 4.5 3.2 7.8 7.5 9 4.3-1.2 7.5-4.5 7.5-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.01"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="2.8"/><path d="M4.5 5.5v13c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-13M4.5 12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<div class="a11y" role="toolbar" aria-label="Accessibility options">
+  <span class="lbl"><svg><use href="#i-a11y"/></svg><span>Accessibility</span></span>
+  <button id="fsm" aria-label="Smaller text">A−</button>
+  <button id="fsp" aria-label="Larger text">A+</button>
+  <button id="hcb" aria-pressed="false"><svg><use href="#i-contrast"/></svg>High contrast</button>
+  <button id="autob" aria-pressed="false" title="Read each screening question aloud automatically"><svg><use href="#i-eye"/></svg>Auto-read questions</button>
+  <button id="tts" aria-pressed="false"><svg><use href="#i-speak"/></svg><span>Read page aloud</span></button>
+</div>
+
 <header>
-  <div class="logo"><span class="mark">+</span>ReMind</div>
-  <nav aria-label="Main">
-    <button data-go="home">Home</button>
-    <button data-go="screen">Screening</button>
-    <button data-go="games">Games</button>
-    <button data-go="track">My results</button>
-    <button class="btn pill" id="authbtn">Log in</button>
+  <button class="logo" data-go="home" aria-label="ReMind home">
+    <svg viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="11" fill="url(#lg)"/><path d="M7 19h5l2.5-6 4 11 3-8 1.8 3H29" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    ReMind
+  </button>
+  <nav class="nav" aria-label="Main">
+    <button class="nl" data-go="home"><svg aria-hidden="true"><use href="#i-home"/></svg>Home</button>
+    <button class="nl" data-go="screen"><svg aria-hidden="true"><use href="#i-check"/></svg>Screening</button>
+    <button class="nl" data-go="games"><svg aria-hidden="true"><use href="#i-game"/></svg>Games</button>
+    <button class="nl" data-go="track"><svg aria-hidden="true"><use href="#i-chart"/></svg>My results<span class="badge hidden" id="nbadge"></span></button>
   </nav>
+  <button class="btn sm" id="authbtn">Log in</button>
 </header>
-<div class="who hidden" id="who"><label for="whoSel">Screening for:</label><select id="whoSel"></select><button class="btn alt" id="addP" style="padding:6px 14px">Add a person</button></div>
+
+<div class="who hidden" id="who">
+  <svg aria-hidden="true"><use href="#i-users"/></svg>
+  <label for="whoSel">Screening for</label>
+  <select id="whoSel"></select>
+  <button class="btn alt sm" id="addP"><svg aria-hidden="true"><use href="#i-plus"/></svg>Add a person</button>
+</div>
+
 <main>
 
 <!-- HOME -->
 <section id="home">
-  <h1>Check your <span class="gt">cognitive health</span> in 5 minutes.</h1>
-  <p>ReMind is a free early screening for Alzheimer's disease. Answer a short questionnaire. Our model, trained on real patient data from the National Alzheimer's Coordinating Center, estimates your risk level from your age, mood, and behavior.</p>
-  <p>If your risk is high, you get brain games and tracking to share with your doctor. If it is low, you get regular check-ins so changes are caught early.</p>
-  <div class="row"><button class="btn" data-go="screen">Start screening</button><button class="btn alt" data-go="games">Try the games</button></div>
-  <p class="note">ReMind is a screening tool, not a diagnosis. It does not replace a doctor. If you are worried about memory changes, talk to a healthcare professional.</p>
+  <div class="hero">
+    <div>
+      <span class="eyebrow"><b>FREE</b>Private · 5 minutes · No sign-up fees</span>
+      <h1 class="display">Notice memory changes <span class="gt">early.</span></h1>
+      <p class="lead">ReMind is a free early screening for Alzheimer's disease. Answer a short questionnaire, and a model trained on 37,159 research visits from the National Alzheimer's Coordinating Center estimates your risk level from your age, mood, and behavior.</p>
+      <div class="row" style="margin-top:26px">
+        <button class="btn lg" data-go="screen">Start free screening<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <button class="btn alt lg" data-go="games">Try the brain games</button>
+      </div>
+      <div class="trust">
+        <span><svg aria-hidden="true"><use href="#i-lock"/></svg>Data stays on your device</span>
+        <span><svg aria-hidden="true"><use href="#i-shield"/></svg>Built on NACC research data</span>
+        <span><svg aria-hidden="true"><use href="#i-speak"/></svg>Reads aloud for you</span>
+      </div>
+    </div>
+    <div class="visual" aria-hidden="true">
+      <div class="fchip a"><i style="background:var(--ok-soft)">🧩</i>Memory match · 14 moves</div>
+      <div class="mock">
+        <div class="top"><span class="chip">Example result</span><span class="muted" style="font-size:.8rem">Today</span></div>
+        <div class="ring">
+          <div class="g">
+            <svg viewBox="0 0 120 120" width="118" height="118" style="transform:rotate(-90deg)"><circle cx="60" cy="60" r="48" fill="none" style="stroke:var(--surface-2)" stroke-width="12"/><circle cx="60" cy="60" r="48" fill="none" style="stroke:var(--ok)" stroke-width="12" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="244"/></svg>
+            <b>19<small>out of 100</small></b>
+          </div>
+          <div>
+            <span class="lp ok">Lower risk pattern</span>
+            <div style="font-weight:800;font-size:1.25rem;margin-top:8px;letter-spacing:-.02em">Very low</div>
+            <div class="muted" style="font-size:.85rem">Re-screen in 3 months</div>
+          </div>
+        </div>
+        <div class="spark">
+          <div class="muted" style="font-size:.8rem;font-weight:700">Score over time</div>
+          <svg viewBox="0 0 300 60" preserveAspectRatio="none"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c3aed" stop-opacity=".3"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></linearGradient></defs><path d="M0 30 C40 26 60 40 100 34 S160 20 200 28 S260 36 300 24 V60 H0Z" fill="url(#sg)"/><path d="M0 30 C40 26 60 40 100 34 S160 20 200 28 S260 36 300 24" fill="none" style="stroke:var(--brand)" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="fchip b"><i style="background:var(--brand-soft)">🔊</i>Reading question aloud…</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat say"><b>37,159</b><span>research visits used for training</span></div>
+    <div class="stat say"><b>0.81</b><span>cross-validated accuracy (AUC)</span></div>
+    <div class="stat say"><b>22</b><span>short, plain-language questions</span></div>
+    <div class="stat say"><b>100%</b><span>of your answers kept on your device</span></div>
+  </div>
+
+  <div class="sh">
+    <span class="kicker">How it works</span>
+    <h2>Three steps. Five minutes.</h2>
+    <p>Built for older adults and the people who care for them.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Answer 22 questions</h3><p>About mood, behavior, sleep, and appetite, for yourself or someone you care for.</p></div>
+    <div class="step"><div class="n">2</div><h3>Get your risk level</h3><p>See your level, plus which answers raised or lowered the score.</p></div>
+    <div class="step"><div class="n">3</div><h3>Follow your plan</h3><p>Higher risk: daily brain games and a doctor report. Lower risk: check-ins every 3 months.</p></div>
+  </div>
+
+  <div class="sh">
+    <span class="kicker">Everything in one place</span>
+    <h2>More than a quiz</h2>
+  </div>
+  <div class="feats">
+    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-check"/></svg></div><h3>Research-based screening</h3><p>A logistic regression model trained on National Alzheimer's Coordinating Center data.</p></div>
+    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-game"/></svg></div><h3>Brain games</h3><p>Memory match and the Stroop color-word test, with scores tracked over time.</p></div>
+    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-chart"/></svg></div><h3>Trend tracking</h3><p>Charts show how your score and game results change between visits.</p></div>
+    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-users"/></svg></div><h3>Caregiver mode</h3><p>Screen a parent or loved one and see everyone's alerts on one dashboard.</p></div>
+    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-file"/></svg></div><h3>Doctor report</h3><p>Print or save a one-page summary to bring to an appointment.</p></div>
+    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-bell"/></svg></div><h3>Smart alerts</h3><p>Get reminders when a re-screen is due or a score rises.</p></div>
+  </div>
+
+  <div class="callout">
+    <div>
+      <span class="kicker" style="color:inherit;opacity:.85">Accessible by design</span>
+      <h2>Made for every mind and every eye.</h2>
+      <p>Memory changes often come with vision and hearing changes. ReMind can read every page and question aloud, highlighting each line as it goes.</p>
+      <div class="row"><button class="btn" id="demoTTS"><svg aria-hidden="true"><use href="#i-speak"/></svg>Hear it now</button></div>
+    </div>
+    <ul>
+      <li><svg aria-hidden="true"><use href="#i-speak"/></svg>Read aloud with follow-along highlight</li>
+      <li><svg aria-hidden="true"><use href="#i-text"/></svg>Text up to 160% larger</li>
+      <li><svg aria-hidden="true"><use href="#i-contrast"/></svg>High-contrast mode</li>
+      <li><svg aria-hidden="true"><use href="#i-a11y"/></svg>Large buttons and keyboard shortcuts</li>
+    </ul>
+  </div>
+
+  <div class="note"><svg aria-hidden="true"><use href="#i-info"/></svg><p>ReMind is a screening tool, not a diagnosis. It does not replace a doctor. If you are worried about memory changes, talk to a healthcare professional.</p></div>
+  <p class="sitefoot no-read"><b>ReMind</b> · Screening 2.0 · Not medical advice</p>
 </section>
 
 <!-- AUTH -->
 <section id="auth" class="hidden">
-  <h1 class="ctitle"><span class="gt">Welcome</span> to ReMind</h1>
-  <div class="panel">
-    <div class="row" style="margin:0 0 16px"><button class="btn" id="tabin">Log in</button><button class="btn alt" id="tabup">Create account</button></div>
-    <p><label for="un">Username</label><br><input id="un" type="text" autocomplete="username" autocapitalize="none" spellcheck="false"></p>
-    <p><label for="pw">Password (6+ characters)</label><br><input id="pw" type="password" autocomplete="current-password"></p>
-    <p id="aerr" class="muted" role="alert"></p>
-    <button class="btn" id="asubmit" style="width:100%">Log in</button>
-    <p class="foot">Your account and results are saved only on this device. Screening 2.0 • Not medical advice</p>
+  <div class="xnarrow">
+    <h1 class="ctitle"><span class="gt">Welcome</span> to ReMind</h1>
+    <p class="csub">Log in to save your results and track them over time.</p>
+    <div class="panel">
+      <div class="seg" role="tablist"><button id="tabin" class="on" role="tab">Log in</button><button id="tabup" role="tab">Create account</button></div>
+      <div class="field"><label for="un">Username</label><input id="un" type="text" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
+      <div class="field"><label for="pw">Password <span class="hint">(6+ characters)</span></label><input id="pw" type="password" autocomplete="current-password"></div>
+      <p id="aerr" class="err" role="alert"></p>
+      <button class="btn block lg" id="asubmit" style="margin-top:8px">Log in</button>
+      <p class="foot"><svg width="13" height="13" style="vertical-align:-2px" aria-hidden="true"><use href="#i-lock"/></svg> Your account and results are saved only on this device.</p>
+    </div>
   </div>
 </section>
 
 <!-- SCREEN -->
 <section id="screen" class="hidden">
-  <h1 class="ctitle"><span class="gt">Cognitive Wellness</span> Check</h1>
-  <div id="intro" class="panel">
-    <h2>About you</h2>
-    <p>Answer for yourself, or for the person you care for. The screening has 22 short questions.</p>
-    <p><label for="age">Age</label><br><input id="age" type="number" min="40" max="110" value="65" inputmode="numeric"></p>
-    <p><label for="sex">Sex</label><br><select id="sex"><option value="1">Male</option><option value="2">Female</option></select></p>
-    <p><label for="edu">Years of education (12 = high school, 16 = bachelor's)</label><br><input id="edu" type="number" min="0" max="30" value="16" inputmode="numeric"></p>
-    <p id="err" class="muted" role="alert"></p>
-    <div class="row"><button class="btn" id="begin" style="width:100%">Begin →</button></div>
-    <p class="foot">Screening 2.0 • Not medical advice</p>
+  <div class="narrow">
+    <h1 class="ctitle"><span class="gt">Cognitive Wellness</span> Check</h1>
+    <p class="csub">About 5 minutes · 22 questions · Answer honestly, there are no wrong answers.</p>
+    <div id="intro" class="panel">
+      <span class="chip">Step 1 of 2</span>
+      <h2 style="margin-top:14px">About you</h2>
+      <p class="muted">Answer for yourself, or for the person you care for.</p>
+      <div class="two">
+        <div class="field"><label for="age">Age</label><input id="age" type="number" min="40" max="110" value="65" inputmode="numeric"></div>
+        <div class="field"><label for="sex">Sex</label><select id="sex"><option value="1">Male</option><option value="2">Female</option></select></div>
+      </div>
+      <div class="field"><label for="edu">Years of education <span class="hint">(12 = high school, 16 = bachelor's)</span></label><input id="edu" type="number" min="0" max="30" value="16" inputmode="numeric"></div>
+      <p id="err" class="err" role="alert"></p>
+      <button class="btn block lg" id="begin" style="margin-top:6px">Begin questions<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <p class="foot">Screening 2.0 · Not medical advice</p>
+    </div>
+    <div id="quiz" class="panel hidden">
+      <div class="qhead"><span class="chip" id="qcat"></span><span class="qcount" id="qcount"></span></div>
+      <div class="bar" role="progressbar" aria-label="Screening progress" id="qprog"><i id="qbar"></i></div>
+      <div id="qbody">
+        <div class="qrow">
+          <h2 id="qtext" aria-live="polite"></h2>
+          <button class="icon-btn" id="qsay" aria-label="Read this question aloud" title="Read aloud"><svg aria-hidden="true"><use href="#i-speak"/></svg></button>
+        </div>
+        <div class="opts" id="qopts"></div>
+      </div>
+      <div class="qfoot">
+        <button class="btn ghost" id="back"><svg aria-hidden="true"><use href="#i-back"/></svg>Back</button>
+        <span class="kbd">Press <kbd>1</kbd>–<kbd>4</kbd> to answer</span>
+      </div>
+    </div>
+    <div id="res" class="hidden"></div>
   </div>
-  <div id="quiz" class="panel hidden">
-    <div class="muted" id="qcount"></div>
-    <div class="bar"><i id="qbar"></i></div>
-    <h2 id="qtext"></h2>
-    <div class="cat" id="qcat"></div>
-    <div class="opts" id="qopts"></div>
-    <div class="row"><button class="btn alt" id="back">Back</button></div>
-    <p class="foot">Screening 2.0 • Not medical advice</p>
-  </div>
-  <div id="res" class="hidden"></div>
 </section>
 
 <!-- GAMES -->
 <section id="games" class="hidden">
-  <h1>Brain games</h1>
-  <p id="modeMsg" class="muted"></p>
-  <div class="panel">
-    <h2>Memory match</h2>
-    <p class="muted">Flip two cards at a time and find all the pairs. Trains memory.</p>
-    <div class="grid" id="mgrid"></div>
-    <p id="mstat" class="muted" style="margin-top:12px"></p>
-    <div class="row"><button class="btn" id="mnew">New game</button></div>
-  </div>
-  <div class="panel">
-    <h2>Color word test (Stroop)</h2>
-    <p class="muted">Tap the color of the ink, not the word. Trains mental flexibility. 10 rounds.</p>
-    <div class="stroop" id="sword">Ready?</div>
-    <div class="cols" id="sbtns"></div>
-    <p id="sstat" class="muted" style="text-align:center"></p>
-    <div class="row" style="justify-content:center"><button class="btn" id="snew">Start</button></div>
+  <h1 class="ctitle">Brain <span class="gt">games</span></h1>
+  <p class="csub">Short daily exercises. Your scores are saved to My results.</p>
+  <div class="planbox narrow" style="margin-bottom:18px"><svg aria-hidden="true"><use href="#i-info"/></svg><p id="modeMsg"></p></div>
+  <div class="games">
+    <div class="panel">
+      <div class="ghead"><div class="ic" aria-hidden="true">🧩</div><div><h2>Memory match</h2><p class="muted">Flip two cards at a time and find all 8 pairs.</p></div></div>
+      <div class="grid" id="mgrid"></div>
+      <p id="mstat" class="gstat" aria-live="polite"></p>
+      <div class="row" style="justify-content:center"><button class="btn" id="mnew"><svg aria-hidden="true"><use href="#i-redo"/></svg>New game</button></div>
+    </div>
+    <div class="panel">
+      <div class="ghead"><div class="ic" aria-hidden="true">🎨</div><div><h2>Color word test</h2><p class="muted">Tap the color of the ink, not the word. 10 rounds.</p></div></div>
+      <div class="stroop" id="sword" aria-live="polite">Ready?</div>
+      <div class="cols" id="sbtns"></div>
+      <p id="sstat" class="gstat" aria-live="polite"></p>
+      <div class="row" style="justify-content:center"><button class="btn" id="snew">Start</button></div>
+    </div>
   </div>
 </section>
 
 <!-- TRACK -->
 <section id="track" class="hidden">
-  <h1>My results</h1>
+  <h1 class="ctitle">My <span class="gt">results</span></h1>
   <div id="hist"></div>
 </section>
 
 </main>
+
 <div id="report"></div>
+<div class="ttsbar hidden" id="ttsbar" role="status"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span>Reading aloud…</span><button class="btn sm" id="ttsstop"><svg aria-hidden="true"><use href="#i-stop"/></svg>Stop</button></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog id="pdlg" aria-labelledby="pdlgT">
+  <form id="pform" method="dialog">
+    <h2 id="pdlgT">Add a person</h2>
+    <p class="muted">Screen someone you care for. Their results are kept separate from yours.</p>
+    <div class="field"><label for="pname">Name</label><input id="pname" type="text" maxlength="30" placeholder="For example, Mom" autocomplete="off"></div>
+    <div class="row end"><button type="button" class="btn alt" id="pcancel">Cancel</button><button type="submit" class="btn">Add person</button></div>
+  </form>
+</dialog>
 
 <script>
 /* ============ STORAGE (safe) ============ */
 let cur=null,prof="",curSec="home";const PK=["history","mode","gameLog"];const pk=k=>cur?(k==="profiles"?k+":"+cur:PK.includes(k)?k+":"+cur+(prof?"|"+prof:""):k):k;
 const store={get(k,d){try{const v=localStorage.getItem(pk(k));return v?JSON.parse(v):d}catch(e){return d}},
 set(k,v){try{localStorage.setItem(pk(k),JSON.stringify(v))}catch(e){}}};
+const $=id=>document.getElementById(id);
+const ico=n=>`<svg aria-hidden="true"><use href="#i-${n}"/></svg>`;
+let toastT;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3600)}
 
 /* ============ MODEL ============ */
 /* Logistic regression (GLM, binomial) fit on NACC first-visit data: AD vs cognitively normal, n=37,159.
@@ -186,6 +591,8 @@ function mlpPredict(f){let x=MLP.features.map((k,i)=>(f[k]-MLP.mu[i])/MLP.sd[i])
 function predictRisk(f){if(MLP)return mlpPredict(f);let z=B.b0;for(const k in B)if(k!=="b0")z+=B[k]*f[k];return 1/(1+Math.exp(-z))}
 const HIGH_CUTOFF=0.5; // the model's classification threshold
 function tier(p){return p<.2?"Very low":p<.4?"Low":p<.6?"Moderate":p<.8?"High":"Very high"}
+const tcls=t=>/^(Very low|Low)$/.test(t)?"ok":t==="Moderate"?"mid":"warn";
+const lvl=t=>t?`<span class="lp ${tcls(t)}">${t}</span>`:"";
 
 /* ============ QUESTIONS ============ */
 const SEV=[["None",0],["Mild",1],["Moderate",2],["Severe",3]],YN=[["No",0],["Yes",1]];
@@ -215,10 +622,10 @@ const secs=["home","auth","screen","games","track"];
 let pending=null;
 function go(id){
   if(!cur&&["screen","games","track"].includes(id)){pending=id;id="auth"}
+  stopSpeak();
   curSec=id;updateBadge();
-  secs.forEach(s=>document.getElementById(s).classList.toggle("hidden",s!==id));
-  document.querySelectorAll("nav button:not(.pill)").forEach(b=>b.toggleAttribute("aria-current",b.dataset.go===id)||0);
-  document.querySelectorAll("nav button:not(.pill)").forEach(b=>{if(b.dataset.go===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  secs.forEach(s=>{const el=$(s),on=s===id;el.classList.toggle("hidden",!on);if(on){el.classList.remove("anim");void el.offsetWidth;el.classList.add("anim")}});
+  document.querySelectorAll(".nl").forEach(b=>{if(b.dataset.go===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
   if(id==="games")gamesInit();
   if(id==="track")renderHist();
   window.scrollTo(0,0);
@@ -227,7 +634,6 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b
 
 /* ============ SCREENING ============ */
 let qi=0,ans={},demo={};
-const $=id=>document.getElementById(id);
 $("begin").onclick=()=>{
   const a=+$("age").value,e=+$("edu").value;
   if(!(a>=40&&a<=110)){$("err").textContent="Enter an age from 40 to 110.";return}
@@ -239,34 +645,59 @@ $("back").onclick=()=>{if(qi>0){qi--;showQ()}};
 function showQ(){
   const q=Q[qi];
   $("qcount").textContent=`Question ${qi+1} of ${Q.length}`;$("qcat").textContent=q.g;
-  $("qbar").style.width=(qi/Q.length*100)+"%";
+  $("qbar").style.width=(qi/Q.length*100)+"%";$("qprog").setAttribute("aria-valuenow",Math.round(qi/Q.length*100));
   $("qtext").textContent=q.t;
-  $("qopts").innerHTML="";
-  q.o.forEach(([label,val])=>{const b=document.createElement("button");b.textContent=label;b.onclick=()=>{ans[q.id]=val;qi++;qi<Q.length?showQ():finish()};$("qopts").appendChild(b)});
+  $("back").style.visibility=qi>0?"visible":"hidden";
+  const box=$("qopts");box.innerHTML="";box.className="opts"+(q.o.length===2?" yn":"");
+  q.o.forEach(([label,val],i)=>{
+    const b=document.createElement("button");b.className="opt"+(ans[q.id]===val?" sel":"");b.dataset.say=`${i+1}: ${label}.`;
+    b.innerHTML=`<span class="k" aria-hidden="true">${i+1}</span><span>${label}</span>`+(q.o===SEV?`<span class="dots" aria-hidden="true">${[1,2,3].map(n=>`<i class="${n<=val?"f":""}"></i>`).join("")}</span>`:"");
+    b.onclick=()=>{ans[q.id]=val;b.classList.add("sel");stopSpeak();qi++;setTimeout(()=>qi<Q.length?showQ():finish(),140)};
+    box.appendChild(b);
+  });
+  const qb=$("qbody");qb.classList.remove("anim");void qb.offsetWidth;qb.classList.add("anim");
+  if(A.auto)readQ(true);else stopSpeak();
 }
+function qItems(){return[{el:$("qtext"),text:$("qtext").textContent},...[...$("qopts").children].map(b=>({el:b,text:b.dataset.say}))]}
+function readQ(force){if(!force&&TTS.on&&TTS.src==="q"){stopSpeak();return}speakItems(qItems(),"q")}
+$("qsay").onclick=()=>readQ(false);
+document.addEventListener("keydown",e=>{
+  if($("quiz").classList.contains("hidden")||curSec!=="screen"||e.target.matches("input,select,textarea")||e.metaKey||e.ctrlKey||e.altKey)return;
+  const n=+e.key;const opts=$("qopts").children;
+  if(n>=1&&n<=opts.length){e.preventDefault();opts[n-1].click()}
+  else if(e.key==="ArrowLeft"){$("back").click()}
+});
 function finish(){
   const gds=GDS.reduce((n,q)=>n+(ans[q.id]===q.bad?1:0),0);
   const f={age:demo.age,sex:demo.sex,educ:demo.educ,ANXSEV:ans.ANXSEV,DEPDSEV:ans.DEPDSEV,APASEV:ans.APASEV,AGITSEV:ans.AGITSEV,MOT:ans.MOT,NITE:ans.NITE,APP:ans.APP,NACCGDS:gds,AFRAID:ans.g6,ENERGY:ans.g13};
-  const p=predictRisk(f),high=p>=HIGH_CUTOFF,t=tier(p);
+  const p=predictRisk(f),high=p>=HIGH_CUTOFF,t=tier(p),c=tcls(t);
   const h=store.get("history",[]);h.push({d:new Date().toISOString(),p,t,high,f});store.set("history",h);
   store.set("mode",high?"high":"low");
   $("quiz").classList.add("hidden");
   const r=$("res");r.classList.remove("hidden");
-  r.innerHTML=`<div class="panel result ${high?"high":""}">
-    <h2>${high?"Higher risk pattern":"Lower risk pattern"}</h2>
-    <div class="big">${t}</div>
-    <p class="muted">risk level (model score ${p.toFixed(2)} out of 1)</p>
-    <p>${high?"Your answers match patterns seen more often in people who later develop Alzheimer's. This is not a diagnosis. Please share this result with your doctor. You can use the brain games and track changes over time.":"Your answers match patterns seen more often in people without Alzheimer's. Re-screen every 3 months so any change is caught early. Exercise, sleep, and social time help."}</p>
-    ${gds>=5?'<p>Your mood answers suggest low mood. This is common and treatable, so mention it to your doctor. If you ever feel unsafe, call or text 988 (US).</p>':''}
-    ${factorsBlock(f)}<p class="muted">The model was trained on research-clinic data. The level compares you with that group, so it is not your personal chance of getting Alzheimer's.</p>
+  const C=2*Math.PI*66;
+  r.innerHTML=`<div class="panel res ${c} anim">
+    <div class="result">
+      <div class="gauge" aria-hidden="true"><svg viewBox="0 0 160 160"><circle class="trk" cx="80" cy="80" r="66"/><circle class="val" id="gval" cx="80" cy="80" r="66" style="stroke-dasharray:${C};stroke-dashoffset:${C}"/></svg><div class="c"><b>${Math.round(p*100)}</b><span>out of 100</span></div></div>
+      <div>
+        <span class="lp ${c}">${high?"Higher risk pattern":"Lower risk pattern"}</span>
+        <h2 class="tierh">${t} risk level</h2>
+        <p class="muted">Model score ${p.toFixed(2)} out of 1</p>
+        <p>${high?"Your answers match patterns seen more often in people who later develop Alzheimer's. This is not a diagnosis. Please share this result with your doctor. You can use the brain games and track changes over time.":"Your answers match patterns seen more often in people without Alzheimer's. Re-screen every 3 months so any change is caught early. Exercise, sleep, and social time help."}</p>
+      </div>
+    </div>
+    ${gds>=5?`<div class="alertbox">${ico("info")}<p>Your mood answers suggest low mood. This is common and treatable, so mention it to your doctor. If you ever feel unsafe, call or text 988 (US).</p></div>`:""}
+    ${factorsBlock(f)}
+    <p class="muted" style="margin-top:16px">The model was trained on research-clinic data. The level compares you with that group, so it is not your personal chance of getting Alzheimer's.</p>
     <div class="row">
-      ${high?'<button class="btn" data-go="games">Open brain games</button>':'<button class="btn" data-go="track">See my results</button>'}
-      <button class="btn alt" id="again">Screen again</button>
-      <button class="btn alt" id="rep">Doctor report</button>
-      <a class="btn alt" style="text-decoration:none" href="${mailHref(p,t,high)}">Email result</a>
+      ${high?`<button class="btn" data-go="games">${ico("game")}Open brain games</button>`:`<button class="btn" data-go="track">${ico("chart")}See my results</button>`}
+      <button class="btn alt" id="rep">${ico("file")}Doctor report</button>
+      <a class="btn alt" href="${mailHref(p,t,high)}">${ico("mail")}Email result</a>
+      <button class="btn ghost" id="again">${ico("redo")}Screen again</button>
     </div></div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{const g=$("gval");if(g)g.style.strokeDashoffset=C*(1-p)}));
   $("again").onclick=()=>{$("intro").classList.remove("hidden");r.classList.add("hidden")};
-  $("rep").onclick=printReport;updateBadge();
+  $("rep").onclick=printReport;updateBadge();window.scrollTo({top:0,behavior:"smooth"});
 }
 
 /* ============ FACTORS, CHARTS, CAREGIVER ============ */
@@ -277,18 +708,22 @@ const REF={age:65,sex:1.5,educ:16,ANXSEV:0,DEPDSEV:0,APASEV:0,AGITSEV:0,NACCGDS:
 function factors(f){return Object.keys(REF).map(k=>({k,c:B[k]*(f[k]-REF[k])})).filter(x=>Math.abs(x.c)>=0.05).sort((a,b)=>Math.abs(b.c)-Math.abs(a.c)).slice(0,6)}
 function factorsBlock(f){
   const F=factors(f);if(!F.length)return"";const m=Math.max(...F.map(x=>Math.abs(x.c)));
-  return `<h2 style="margin-top:18px;font-size:1.1rem">What influenced this result</h2><p class="muted">Right of the line raised the score, left lowered it, compared with a typical healthy 65-year-old.</p>`+
-    F.map(x=>{const w=Math.abs(x.c)/m*50;return `<div class="fb"><span class="l">${FL[x.k]}</span><div class="tr"><i class="${x.c>0?"up":"dn"}" style="left:${x.c>0?50:50-w}%;width:${w}%"></i></div></div>`}).join("");
+  return `<div class="divider"></div><h3>What influenced this result</h3><p class="muted">Compared with a typical healthy 65-year-old.</p>
+    <div class="legend no-read" aria-hidden="true"><span><i class="fd"></i>Lowered the score</span><span><i class="fu"></i>Raised the score</span></div>`+
+    F.map(x=>{const w=Math.abs(x.c)/m*50;return `<div class="fb say" data-say="${FL[x.k]}: ${x.c>0?"raised":"lowered"} the score."><span class="l">${FL[x.k]}</span><div class="tr"><i class="${x.c>0?"fu":"fd"}" style="left:${x.c>0?50:50-w}%;width:${w}%"></i></div></div>`}).join("");
 }
+let chartN=0;
 function chart(pts,o){
-  if(pts.length<2)return'<p class="muted">Complete at least two to see a trend.</p>';
-  const W=520,H=170,L=34,R=10,T=10,Bt=26,n=pts.length,mn=o.min,mx=o.max||1;
+  if(pts.length<2)return'<p class="empty">Complete at least two to see a trend.</p>';
+  const W=560,H=190,L=36,R=12,T=14,Bt=28,n=pts.length,mn=o.min,mx=o.max||1,id="cg"+(++chartN);
   const X=i=>L+(W-L-R)*i/(n-1),Y=v=>T+(H-T-Bt)*(1-(v-mn)/(mx-mn));
-  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Trend chart">`;
-  [mn,(mn+mx)/2,mx].forEach(v=>s+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L-4}" y="${Y(v)+4}" text-anchor="end" font-size="10" fill="var(--muted)">${o.fmt(v)}</text>`);
-  if(o.line!=null)s+=`<line x1="${L}" x2="${W-R}" y1="${Y(o.line)}" y2="${Y(o.line)}" stroke="var(--amber)" stroke-dasharray="4 3"/>`;
-  s+=`<polyline fill="none" stroke="var(--teal)" stroke-width="3" points="${pts.map((p,i)=>X(i)+","+Y(p.y)).join(" ")}"/>`;
-  pts.forEach((p,i)=>s+=`<circle cx="${X(i)}" cy="${Y(p.y)}" r="4" fill="var(--teal)"/><text x="${X(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--muted)">${p.x}</text>`);
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.label||"Trend chart"}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--brand);stop-opacity:.25"/><stop offset="1" style="stop-color:var(--brand);stop-opacity:0"/></linearGradient></defs>`;
+  [mn,(mn+mx)/2,mx].forEach(v=>s+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" style="stroke:var(--line)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" style="fill:var(--muted)">${o.fmt(v)}</text>`);
+  if(o.line!=null)s+=`<line x1="${L}" x2="${W-R}" y1="${Y(o.line)}" y2="${Y(o.line)}" style="stroke:var(--warn)" stroke-dasharray="5 4" stroke-width="1.5"/>`;
+  const P=pts.map((p,i)=>X(i)+","+Y(p.y));
+  s+=`<path d="M${X(0)},${Y(mn)} L${P.join(" L")} L${X(n-1)},${Y(mn)} Z" fill="url(#${id})"/>`;
+  s+=`<polyline fill="none" style="stroke:var(--brand)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="${P.join(" ")}"/>`;
+  pts.forEach((p,i)=>s+=`<circle cx="${X(i)}" cy="${Y(p.y)}" r="5" style="fill:var(--surface);stroke:var(--brand)" stroke-width="2.5"/><text x="${X(i)}" y="${H-8}" text-anchor="middle" font-size="11" style="fill:var(--muted)">${p.x}</text>`);
   return s+"</svg>";
 }
 const rd=pr=>{try{return JSON.parse(localStorage.getItem("history:"+cur+(pr?"|"+pr:"")))||[]}catch(e){return[]}};
@@ -302,19 +737,19 @@ function alertsFor(pr){
   return a;
 }
 function updateBadge(){
-  const b=document.querySelector('nav button[data-go="track"]');if(!b)return;
+  const b=$("nbadge");if(!b)return;
   let n=0;if(cur)people().forEach(pr=>{n+=alertsFor(pr).filter(x=>x.k).length});
-  b.textContent="My results"+(n?" ("+n+")":"");
+  b.textContent=n;b.classList.toggle("hidden",!n);b.setAttribute("aria-label",n+" alerts");
 }
 function dashHTML(){
   if(!cur)return"";const ps=people();
-  const rows=ps.map(pr=>{const h=rd(pr),l=h[h.length-1],al=alertsFor(pr);return `<tr><td>${esc(pr||"Myself")}</td><td>${l?l.t+" ("+new Date(l.d).toLocaleDateString()+")":"None yet"}</td><td>${al.map(x=>esc(x.m)).join("<br>")||"All clear"}</td></tr>`}).join("");
-  return `<div class="panel"><h2>${ps.length>1?"Caregiver dashboard":"Alerts"}</h2><table><tr><th>Person</th><th>Latest</th><th>Alerts</th></tr>${rows}</table><p class="muted">Use "Add a person" at the top to screen someone you care for. After a screening, "Email result" sends a summary to a family member or doctor.</p></div>`;
+  const rows=ps.map(pr=>{const h=rd(pr),l=h[h.length-1],al=alertsFor(pr);return `<tr><td><b>${esc(pr||"Myself")}</b></td><td>${l?lvl(l.t)+`<div class="muted" style="font-size:.8rem;margin-top:4px">${new Date(l.d).toLocaleDateString()}</div>`:"None yet"}</td><td>${al.map(x=>esc(x.m)).join("<br>")||"✓ All clear"}</td></tr>`}).join("");
+  return `<div class="panel"><div class="phead"><h2>${ps.length>1?"Caregiver dashboard":"Alerts"}</h2><span class="chip">${ico("bell").replace("<svg","<svg width='14' height='14'")}${ps.length} ${ps.length>1?"people":"person"}</span></div><div class="tw"><table><tr><th>Person</th><th>Latest</th><th>Alerts</th></tr>${rows}</table></div><p class="muted" style="margin:14px 0 0">Use "Add a person" at the top to screen someone you care for. After a screening, "Email result" sends a summary to a family member or doctor.</p></div>`;
 }
 const mailHref=(p,t,high)=>"mailto:?subject="+encodeURIComponent("ReMind screening result for "+(prof||cur))+"&body="+encodeURIComponent(`ReMind screening on ${new Date().toLocaleDateString()}\nRisk level: ${t} (model score ${p.toFixed(2)})\nPattern: ${high?"higher":"lower"} risk\nThis is a screening tool, not a diagnosis.`);
 function printReport(){
   const h=store.get("history",[]),g=store.get("gameLog",[]);
-  if(!h.length){alert("Complete a screening first.");return}
+  if(!h.length){toast("Complete a screening first.");return}
   const l=h[h.length-1],F=l.f?factors(l.f):[];
   $("report").innerHTML=`<h1>ReMind screening report</h1>
   <p><b>Person:</b> ${esc(prof||cur)}${prof?" (account: "+esc(cur)+")":""}<br><b>Date:</b> ${new Date(l.d).toLocaleDateString()}</p>
@@ -329,19 +764,25 @@ function printReport(){
 
 /* ============ TRACK ============ */
 function renderHist(){
-  const h=store.get("history",[]),g=store.get("gameLog",[]);
-  let html=`<p class="muted">Showing results for: <b>${esc(prof||"Myself")}</b></p>`+dashHTML();
-  if(!h.length)html+=`<div class="panel"><p>No screenings yet for this person.</p><button class="btn" data-go="screen">Start screening</button></div>`;
+  const h=store.get("history",[]),g=store.get("gameLog",[]),l=h[h.length-1];
+  let html=`<p class="csub">Showing results for <b style="color:var(--ink)">${esc(prof||"Myself")}</b></p>`;
+  html+=`<div class="kpis"><div class="kpi say"><span>Latest level</span><b>${l?lvl(l.t):"—"}</b></div><div class="kpi say"><span>Screenings</span><b>${h.length}</b></div><div class="kpi say"><span>Games played</span><b>${g.length}</b></div></div>`;
+  html+=dashHTML();
+  if(!h.length)html+=`<div class="panel empty"><div class="big" aria-hidden="true">📋</div><h2>No screenings yet</h2><p class="muted" style="margin:0 auto 18px">Take the 5-minute screening to see your risk level and start tracking.</p><button class="btn" data-go="screen">Start screening${ico("arrow")}</button></div>`;
   else{
-    html+=`<div class="panel"><h2>Risk score over time</h2>${chart(h.slice(-8).map(x=>({x:sd(x.d),y:x.p})),{min:0,max:1,line:HIGH_CUTOFF,fmt:v=>v.toFixed(1)})}<p class="muted">Dashed line: high-risk cutoff (0.5). Lower is better.</p></div>`;
-    html+=`<div class="panel"><h2>Screenings</h2><table><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.slice().reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.t||""}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table></div>`;
+    html+=`<div class="panel"><h2>Risk score over time</h2>${chart(h.slice(-8).map(x=>({x:sd(x.d),y:x.p})),{min:0,max:1,line:HIGH_CUTOFF,fmt:v=>v.toFixed(1),label:"Risk score trend"})}<p class="muted" style="margin:6px 0 0">Dashed line: high-risk cutoff (0.5). Lower is better.</p></div>`;
+    html+=`<div class="panel"><h2>Screenings</h2><div class="tw"><table><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.slice().reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${lvl(x.t)}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table></div></div>`;
   }
   const mm=g.filter(x=>x.g==="Memory match"&&x.v!=null).slice(-8),ss=g.filter(x=>x.g==="Stroop"&&x.v!=null).slice(-8);
-  if(mm.length)html+=`<div class="panel"><h2>Memory match: moves</h2>${chart(mm.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...mm.map(x=>x.v))+2),fmt:v=>Math.round(v)})}<p class="muted">Fewer moves is better.</p></div>`;
-  if(ss.length)html+=`<div class="panel"><h2>Color word test: average seconds</h2>${chart(ss.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...ss.map(x=>x.v))+1),fmt:v=>v.toFixed(1)})}<p class="muted">Faster is better.</p></div>`;
-  if(h.length||g.length)html+=`<div class="row"><button class="btn" id="rep2">Download doctor report</button><button class="btn alt" id="clr">Clear this person's data</button></div>`;
+  if(mm.length||ss.length){
+    html+=`<div class="twocol">`;
+    if(mm.length)html+=`<div class="panel"><h2>Memory match: moves</h2>${chart(mm.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...mm.map(x=>x.v))+2),fmt:v=>Math.round(v),label:"Memory match moves trend"})}<p class="muted" style="margin:6px 0 0">Fewer moves is better.</p></div>`;
+    if(ss.length)html+=`<div class="panel"><h2>Color word test: seconds</h2>${chart(ss.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...ss.map(x=>x.v))+1),fmt:v=>v.toFixed(1),label:"Color word test time trend"})}<p class="muted" style="margin:6px 0 0">Faster is better.</p></div>`;
+    html+=`</div>`;
+  }
+  if(h.length||g.length)html+=`<div class="row" style="margin-top:22px"><button class="btn" id="rep2">${ico("file")}Download doctor report</button><button class="btn ghost" id="clr">Clear this person's data</button></div>`;
   $("hist").innerHTML=html;
-  const c=$("clr");if(c)c.onclick=()=>{store.set("history",[]);store.set("gameLog",[]);store.set("mode",null);renderHist();updateBadge()};
+  const c=$("clr");if(c)c.onclick=()=>{if(!confirm("Delete all screenings and game scores for "+(prof||"yourself")+"? This can't be undone."))return;store.set("history",[]);store.set("gameLog",[]);store.set("mode",null);renderHist();updateBadge();toast("Data cleared.")};
   const r2=$("rep2");if(r2)r2.onclick=printReport;
 }
 function logGame(g,r,v){const l=store.get("gameLog",[]);l.push({d:new Date().toISOString(),g,r,v});store.set("gameLog",l)}
@@ -349,7 +790,7 @@ function logGame(g,r,v){const l=store.get("gameLog",[]);l.push({d:new Date().toI
 /* ============ GAMES ============ */
 function gamesInit(){
   const m=store.get("mode",null);
-  $("modeMsg").textContent=m==="high"?"Suggested daily: one round of each game. Scores are saved to My results.":m==="low"?"You are in monitoring mode. Games are optional. Re-screen every 3 months.":"Take the screening first to get a plan. You can play any time.";
+  $("modeMsg").textContent=m==="high"?"Your plan: one round of each game every day. Scores are saved to My results.":m==="low"?"You are in monitoring mode. Games are optional. Re-screen every 3 months.":"Take the screening first to get a personal plan. You can play any time.";
   if(!$("mgrid").children.length)newMemory();
 }
 /* Memory match */
@@ -360,15 +801,16 @@ function newMemory(){
   mFirst=null;mLock=false;mMoves=0;mLeft=8;$("mstat").textContent="Moves: 0";
   const g=$("mgrid");g.innerHTML="";
   deck.forEach(s=>{
-    const b=document.createElement("button");b.className="card";b.setAttribute("aria-label","Hidden card");b.dataset.s=s;b.textContent="";
+    const b=document.createElement("button");b.className="card";b.setAttribute("aria-label","Hidden card");b.dataset.s=s;
+    b.innerHTML=`<span class="f fr" aria-hidden="true">✦</span><span class="f bk" aria-hidden="true">${s}</span>`;
     b.onclick=()=>{
       if(mLock||b.classList.contains("up")||b.classList.contains("done"))return;
-      b.classList.add("up");b.textContent=s;b.setAttribute("aria-label",s);
+      b.classList.add("up");b.setAttribute("aria-label",s);
       if(!mFirst){mFirst=b;return}
       mMoves++;$("mstat").textContent="Moves: "+mMoves;
-      if(mFirst.dataset.s===s){mFirst.className=b.className="card done";mFirst=null;
-        if(--mLeft===0){$("mstat").textContent=`Done in ${mMoves} moves. Fewer moves is better.`;logGame("Memory match",mMoves+" moves",mMoves)}}
-      else{mLock=true;const a=mFirst;mFirst=null;setTimeout(()=>{[a,b].forEach(x=>{x.className="card";x.textContent="";x.setAttribute("aria-label","Hidden card")});mLock=false},900)}
+      if(mFirst.dataset.s===s){const a=mFirst;mFirst=null;[a,b].forEach(x=>{x.classList.remove("up");x.classList.add("done")});
+        if(--mLeft===0){$("mstat").textContent=`🎉 Done in ${mMoves} moves. Fewer moves is better.`;logGame("Memory match",mMoves+" moves",mMoves);toast("Nice work! Score saved to My results.")}}
+      else{mLock=true;const a=mFirst;mFirst=null;setTimeout(()=>{[a,b].forEach(x=>{x.classList.remove("up");x.setAttribute("aria-label","Hidden card")});mLock=false},950)}
     };
     g.appendChild(b);
   });
@@ -379,11 +821,11 @@ const COL=[["Red","#c62828"],["Blue","#1565c0"],["Green","#2e7d32"],["Orange","#
 let sRound=0,sOk=0,sTimes=[],sT0=0,sCur=null,sOn=false;
 const sb=$("sbtns");
 COL.forEach(([n,c])=>{const b=document.createElement("button");b.className="btn alt";b.textContent=n;b.onclick=()=>sAnswer(n);sb.appendChild(b)});
-$("snew").onclick=()=>{sRound=0;sOk=0;sTimes=[];sOn=true;sNext()};
+$("snew").onclick=()=>{sRound=0;sOk=0;sTimes=[];sOn=true;$("snew").textContent="Restart";sNext()};
 function sNext(){
   if(sRound>=10){sOn=false;const avg=sTimes.reduce((a,b)=>a+b,0)/sTimes.length/1000;
-    $("sword").textContent="Done";$("sword").style.color="";
-    const r=`${sOk}/10 correct, ${avg.toFixed(1)}s average`;$("sstat").textContent=r;logGame("Stroop",r,+avg.toFixed(2));return}
+    $("sword").textContent="Done!";$("sword").style.color="";$("snew").textContent="Play again";
+    const r=`${sOk}/10 correct, ${avg.toFixed(1)}s average`;$("sstat").textContent=r;logGame("Stroop",r,+avg.toFixed(2));toast("Score saved to My results.");return}
   const w=COL[Math.floor(Math.random()*4)][0];
   let ink;do{ink=COL[Math.floor(Math.random()*4)]}while(Math.random()<.85&&ink[0]===w);
   sCur=ink[0];$("sword").textContent=w;$("sword").style.color=ink[1];
@@ -396,12 +838,12 @@ let amode="in";
 const hx=u8=>[...u8].map(x=>x.toString(16).padStart(2,"0")).join("");
 async function hashPw(pw,salt){const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(salt+pw));return hx(new Uint8Array(d))}
 function aerr(m){$("aerr").textContent=m}
-function setMode(m){amode=m;$("asubmit").textContent=m==="in"?"Log in":"Create account";$("tabin").className="btn"+(m==="in"?"":" alt");$("tabup").className="btn"+(m==="up"?"":" alt");$("pw").autocomplete=m==="in"?"current-password":"new-password";aerr("")}
+function setMode(m){amode=m;$("asubmit").textContent=m==="in"?"Log in":"Create account";$("tabin").classList.toggle("on",m==="in");$("tabup").classList.toggle("on",m==="up");$("tabin").setAttribute("aria-selected",m==="in");$("tabup").setAttribute("aria-selected",m==="up");$("pw").autocomplete=m==="in"?"current-password":"new-password";aerr("")}
 $("tabin").onclick=()=>setMode("in");$("tabup").onclick=()=>setMode("up");
 $("pw").addEventListener("keydown",e=>{if(e.key==="Enter")$("asubmit").click()});
-function renderUser(){$("authbtn").textContent=cur?"Log out ("+cur+")":"Log in";renderWho();updateBadge()}
-function login(u){cur=u;prof="";store.set("session",u);$("pw").value="";renderUser();const t=pending||"screen";pending=null;go(t)}
-function logout(){cur=null;prof="";store.set("session",null);renderUser();go("home")}
+function renderUser(){$("authbtn").textContent=cur?"Log out":"Log in";$("authbtn").className=cur?"btn alt sm":"btn sm";$("authbtn").title=cur?"Logged in as "+cur:"";renderWho();updateBadge()}
+function login(u){cur=u;prof="";store.set("session",u);$("pw").value="";renderUser();toast("Welcome, "+u+"!");const t=pending||"screen";pending=null;go(t)}
+function logout(){cur=null;prof="";store.set("session",null);renderUser();go("home");toast("You are logged out.")}
 $("authbtn").onclick=()=>{if(cur)logout();else{pending=null;go("auth")}};
 $("asubmit").onclick=async()=>{
   const u=$("un").value.trim().toLowerCase(),pw=$("pw").value;
@@ -429,26 +871,127 @@ function renderWho(){
 }
 function switchPerson(){$("intro").classList.remove("hidden");$("quiz").classList.add("hidden");$("res").classList.add("hidden");updateBadge();go(curSec)}
 $("whoSel").onchange=()=>{prof=$("whoSel").value;switchPerson()};
-$("addP").onclick=()=>{
-  const n=(prompt("Name of the person you are screening (for example, Mom)")||"").trim().slice(0,30);
-  if(!n||n.includes("|")||n.toLowerCase()==="myself")return;
+const dlg=$("pdlg");
+$("addP").onclick=()=>{$("pname").value="";if(dlg.showModal){dlg.showModal();$("pname").focus()}else addPerson(prompt("Name of the person you are screening (for example, Mom)")||"")};
+$("pcancel").onclick=()=>dlg.close();
+$("pform").onsubmit=e=>{e.preventDefault();const n=$("pname").value;if(addPerson(n))dlg.close()};
+function addPerson(raw){
+  const n=raw.trim().slice(0,30);
+  if(!n){toast("Please enter a name.");return false}
+  if(n.includes("|")||n.toLowerCase()==="myself"){toast("Please choose a different name.");return false}
   const ps=store.get("profiles",[]);if(!ps.includes(n)){ps.push(n);store.set("profiles",ps)}
-  prof=n;renderWho();switchPerson();
-};
+  prof=n;renderWho();switchPerson();toast("Now screening for "+n+".");return true;
+}
 
 /* ============ ACCESSIBILITY ============ */
-const A=store.get("a11y",{s:100,hc:false});
-function applyA(){document.documentElement.style.fontSize=A.s+"%";document.documentElement.classList.toggle("hc",A.hc);$("hcb").setAttribute("aria-pressed",String(A.hc));store.set("a11y",A)}
+const A=Object.assign({s:100,hc:false,auto:false,rate:.95},store.get("a11y",{}));
+function applyA(){document.documentElement.style.fontSize=A.s+"%";document.documentElement.classList.toggle("hc",A.hc);$("hcb").setAttribute("aria-pressed",String(A.hc));$("autob").setAttribute("aria-pressed",String(A.auto));store.set("a11y",A)}
 $("fsm").onclick=()=>{A.s=Math.max(85,A.s-10);applyA()};
 $("fsp").onclick=()=>{A.s=Math.min(160,A.s+10);applyA()};
 $("hcb").onclick=()=>{A.hc=!A.hc;applyA()};
-$("tts").onclick=()=>{
-  const ss=window.speechSynthesis;if(!ss)return;if(ss.speaking){ss.cancel();return}
-  const el=[...document.querySelectorAll("main > section")].find(x=>!x.classList.contains("hidden"));
-  const u=new SpeechSynthesisUtterance(el?el.innerText:"");u.rate=.9;ss.speak(u);
-};
-applyA();renderUser();
+$("autob").onclick=()=>{A.auto=!A.auto;applyA();toast(A.auto?"Questions will be read aloud automatically.":"Auto-read is off.");if(A.auto&&curSec==="screen"&&!$("quiz").classList.contains("hidden"))readQ(true)};
 
+/* ============ TEXT TO SPEECH ============
+   Why the old version failed: it handed the whole page to one utterance. Chrome silently stops long
+   utterances after ~15 s (or never starts them), can garbage-collect an utterance mid-speech, drops a
+   speak() called right after cancel(), and can get stuck "paused". Voices also load asynchronously.
+   Fix: split text into short sentences, queue them one by one, keep a live reference, pick a voice
+   once voices load, resume if paused, and add a watchdog for browsers that never fire onend. */
+const TTS={ss:("speechSynthesis" in window)?window.speechSynthesis:null,on:false,src:null,voice:null,gen:0,u:null,el:null,wd:0};
+function pickVoice(){
+  if(!TTS.ss)return;const vs=TTS.ss.getVoices();if(!vs.length)return;
+  const en=vs.filter(v=>/^en([-_]|$)/i.test(v.lang));
+  const nice=/(Natural|Neural|Premium|Enhanced|Samantha|Ava|Allison|Google US English|Aria|Jenny|Zira)/i;
+  TTS.voice=en.find(v=>nice.test(v.name)&&/US/i.test(v.lang)&&v.localService)||en.find(v=>nice.test(v.name)&&/US/i.test(v.lang))||en.find(v=>v.default)||en.find(v=>/US/i.test(v.lang))||en[0]||vs[0];
+}
+if(TTS.ss){pickVoice();if(TTS.ss.addEventListener)TTS.ss.addEventListener("voiceschanged",pickVoice);else TTS.ss.onvoiceschanged=pickVoice}
+function splitText(t){
+  t=String(t).replace(/[✦→←•✓]/g," ").replace(/\s+/g," ").trim();if(!t)return[];
+  const out=[];
+  t.replace(/([.!?])\s+/g,"$1\u0001").split("\u0001").forEach(s=>{
+    s=s.trim();
+    while(s.length>170){let i=s.lastIndexOf(", ",170);if(i<50)i=s.lastIndexOf(" ",170);if(i<1)i=170;out.push(s.slice(0,i+1).trim());s=s.slice(i+1).trim()}
+    if(s)out.push(s);
+  });
+  return out;
+}
+function mark(el){
+  if(TTS.el&&TTS.el!==el)TTS.el.classList.remove("reading");
+  TTS.el=el;if(!el)return;el.classList.add("reading");
+  const r=el.getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-120)el.scrollIntoView({block:"center",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
+}
+function ttsUI(on){
+  $("ttsbar").classList.toggle("hidden",!on);
+  $("tts").setAttribute("aria-pressed",String(on&&TTS.src==="page"));
+  $("tts").querySelector("span").textContent=on&&TTS.src==="page"?"Stop reading":"Read page aloud";
+  $("qsay").classList.toggle("on",on&&TTS.src==="q");
+  $("qsay").setAttribute("aria-label",on&&TTS.src==="q"?"Stop reading":"Read this question aloud");
+}
+function stopSpeak(){
+  TTS.gen++;TTS.on=false;TTS.src=null;clearTimeout(TTS.wd);
+  if(TTS.ss&&(TTS.ss.speaking||TTS.ss.pending))TTS.ss.cancel();
+  mark(null);ttsUI(false);
+}
+function speakItems(items,src){
+  if(!TTS.ss||typeof SpeechSynthesisUtterance==="undefined"){toast("Read aloud isn't available in this browser. Try Chrome, Edge, or Safari.");return false}
+  const q=[];items.forEach(it=>splitText(it.text).forEach(t=>q.push({el:it.el,t})));
+  if(!q.length){toast("Nothing to read on this page.");return false}
+  const wasBusy=TTS.ss.speaking||TTS.ss.pending;
+  stopSpeak();if(!TTS.voice)pickVoice();
+  const gen=TTS.gen;TTS.on=true;TTS.src=src;ttsUI(true);
+  let i=0,retried=false;
+  const next=()=>{
+    if(gen!==TTS.gen)return;
+    if(i>=q.length){stopSpeak();return}
+    const it=q[i],me=i;mark(it.el);
+    const u=new SpeechSynthesisUtterance(it.t);
+    if(TTS.voice){u.voice=TTS.voice;u.lang=TTS.voice.lang}else u.lang="en-US";
+    u.rate=A.rate;u.pitch=1;u.volume=1;
+    const advance=()=>{if(gen!==TTS.gen||i!==me)return;clearTimeout(TTS.wd);i++;retried=false;next()};
+    u.onend=advance;
+    u.onerror=e=>{
+      if(gen!==TTS.gen||i!==me)return;
+      if(e.error==="interrupted"||e.error==="canceled")return;
+      clearTimeout(TTS.wd);
+      if(e.error==="not-allowed"){stopSpeak();toast("Your browser blocked audio. Tap the read-aloud button again.");return}
+      if(!retried&&TTS.voice&&!TTS.voice.localService){ // online voice failed: fall back to an on-device voice
+        retried=true;const vs=TTS.ss.getVoices();TTS.voice=vs.find(v=>v.localService&&/^en/i.test(v.lang))||vs.find(v=>v.localService)||null;next();return}
+      i++;retried=false;next();
+    };
+    TTS.u=u; // keep a reference so Chrome doesn't garbage-collect it mid-sentence
+    if(TTS.ss.paused)TTS.ss.resume();
+    TTS.ss.speak(u);
+    // Watchdog: some browsers never fire onend. If nothing is speaking well past the expected time, move on.
+    const est=Math.max(2500,it.t.length*85/A.rate)+2500;
+    const chk=()=>{if(gen!==TTS.gen||i!==me)return;if(!TTS.ss.speaking&&!TTS.ss.pending)advance();else TTS.wd=setTimeout(chk,1200)};
+    clearTimeout(TTS.wd);TTS.wd=setTimeout(chk,est);
+  };
+  // Chrome drops a speak() issued in the same tick as cancel(); only delay when something was playing.
+  if(wasBusy)setTimeout(next,120);else next();
+  return true;
+}
+const RSEL="h1,h2,h3,p,li,tr,.opt,.say,.stroop";
+function blocks(root){
+  const out=[];
+  root.querySelectorAll(RSEL).forEach(el=>{
+    if(el.closest("[aria-hidden='true'],.no-read,.hidden"))return;
+    const anc=el.parentElement&&el.parentElement.closest(RSEL);if(anc&&root.contains(anc))return;
+    if(!el.getClientRects().length)return;
+    let t=el.dataset.say||(el.classList.contains("stat")?el.innerText.replace(/\s+/g," ")+".":el.tagName==="TR"?[...el.cells].map(c=>c.innerText.trim()).filter(Boolean).join(", ")+".":el.innerText);
+    t=t.replace(/\s*\n+\s*/g,". ").replace(/\.\s*\./g,".");
+    if(t.trim())out.push({el,text:t});
+  });
+  return out;
+}
+function readPage(){if(TTS.on&&TTS.src==="page"){stopSpeak();return}speakItems(blocks($(curSec)),"page")}
+$("tts").onclick=readPage;
+$("ttsstop").onclick=stopSpeak;
+$("demoTTS").onclick=()=>speakItems(blocks($("home")).slice(0,3),"page");
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&TTS.on)stopSpeak()});
+addEventListener("pagehide",()=>{if(TTS.ss)TTS.ss.cancel()});
+if(TTS.ss)TTS.ss.cancel(); // clear anything Chrome kept queued from a previous page load
+
+applyA();renderUser();
 go("home");
 </script>
 </body>
