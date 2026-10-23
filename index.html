@@ -627,7 +627,7 @@ function go(id){
   secs.forEach(s=>{const el=$(s),on=s===id;el.classList.toggle("hidden",!on);if(on){el.classList.remove("anim");void el.offsetWidth;el.classList.add("anim")}});
   document.querySelectorAll(".nl").forEach(b=>{if(b.dataset.go===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
   if(id==="games")gamesInit();
-  if(id==="track")renderHist();
+  if(id==="track"){renderHist();markAlertsSeen();updateBadge()}
   window.scrollTo(0,0);
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)go(b.dataset.go)});
@@ -736,10 +736,25 @@ function alertsFor(pr){
   if((Date.now()-new Date(l.d))/864e5>90)a.push({m:"A re-screening is due (over 3 months).",k:1});
   return a;
 }
+// function updateBadge(){
+//   const b=$("nbadge");if(!b)return;
+//   let n=0;if(cur)people().forEach(pr=>{n+=alertsFor(pr).filter(x=>x.k).length});
+//   b.textContent=n;b.classList.toggle("hidden",!n);b.setAttribute("aria-label",n+" alerts");
+// }
+// Each alert gets a key tied to the person and their latest screening date,
+// so a new screening that triggers alerts makes the dot show up again.
+function alertKeys(){
+  const ks=[];if(!cur)return ks;
+  people().forEach(pr=>{const h=rd(pr),l=h[h.length-1];
+    alertsFor(pr).filter(x=>x.k).forEach(x=>ks.push(pr+"|"+(l?l.d:"")+"|"+x.m))});
+  return ks;
+}
+function markAlertsSeen(){if(cur)store.set("seen:"+cur,alertKeys())}
 function updateBadge(){
   const b=$("nbadge");if(!b)return;
-  let n=0;if(cur)people().forEach(pr=>{n+=alertsFor(pr).filter(x=>x.k).length});
-  b.textContent=n;b.classList.toggle("hidden",!n);b.setAttribute("aria-label",n+" alerts");
+  const seen=cur?store.get("seen:"+cur,[]):[];
+  const n=alertKeys().filter(k=>!seen.includes(k)).length;
+  b.textContent=n;b.classList.toggle("hidden",!n);b.setAttribute("aria-label",n+" new alerts");
 }
 function dashHTML(){
   if(!cur)return"";const ps=people();
