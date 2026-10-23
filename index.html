@@ -322,6 +322,10 @@ dialog h2{margin-top:0}
 #report{display:none}
 @media print{body{background:#fff!important}body::before{display:none}body>*:not(#report){display:none!important}#report{display:block!important;color:#000;background:#fff;font-size:12pt}#report table{width:100%}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+.quote blockquote{margin:6px 0 14px;font-family:"Fraunces",Georgia,serif;font-size:1.55rem;line-height:1.3;letter-spacing:-.01em}
+.quote blockquote::before{content:"\201C";display:block;font-size:3.4rem;line-height:.7;margin-bottom:4px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.quote figcaption{color:var(--muted);font-weight:600;font-size:.9rem}
+.quote .qactions{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -404,29 +408,19 @@ dialog h2{margin-top:0}
         <span><svg aria-hidden="true"><use href="#i-speak"/></svg>Reads aloud for you</span>
       </div>
     </div>
-    <div class="visual" aria-hidden="true">
-      <div class="fchip a"><i style="background:var(--ok-soft)">🧩</i>Memory match · 14 moves</div>
-      <div class="mock">
-        <div class="top"><span class="chip">Example result</span><span class="muted" style="font-size:.8rem">Today</span></div>
-        <div class="ring">
-          <div class="g">
-            <svg viewBox="0 0 120 120" width="118" height="118" style="transform:rotate(-90deg)"><circle cx="60" cy="60" r="48" fill="none" style="stroke:var(--surface-2)" stroke-width="12"/><circle cx="60" cy="60" r="48" fill="none" style="stroke:var(--ok)" stroke-width="12" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="244"/></svg>
-            <b>19<small>out of 100</small></b>
-          </div>
-          <div>
-            <span class="lp ok">Lower risk pattern</span>
-            <div style="font-weight:800;font-size:1.25rem;margin-top:8px;letter-spacing:-.02em">Very low</div>
-            <div class="muted" style="font-size:.85rem">Re-screen in 3 months</div>
-          </div>
+    <div class="visual">
+      <div class="fchip a" aria-hidden="true"><i style="background:var(--ok-soft)">🧩</i>Memory match · 14 moves</div>
+      <figure class="mock quote" id="dailyQuote">
+        <div class="top"><span class="chip">Today's thought</span><span class="muted" id="qDate" style="font-size:.8rem"></span></div>
+        <blockquote class="say" id="qText"></blockquote>
+        <figcaption id="qBy"></figcaption>
+        <div class="qactions">
+          <button class="btn alt sm" id="qNext">Another one</button>
+          <button class="icon-btn" id="qListen" aria-label="Read today's thought aloud"><svg aria-hidden="true"><use href="#i-speak"/></svg></button>
         </div>
-        <div class="spark">
-          <div class="muted" style="font-size:.8rem;font-weight:700">Score over time</div>
-          <svg viewBox="0 0 300 60" preserveAspectRatio="none"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c3aed" stop-opacity=".3"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></linearGradient></defs><path d="M0 30 C40 26 60 40 100 34 S160 20 200 28 S260 36 300 24 V60 H0Z" fill="url(#sg)"/><path d="M0 30 C40 26 60 40 100 34 S160 20 200 28 S260 36 300 24" fill="none" style="stroke:var(--brand)" stroke-width="3" stroke-linecap="round"/></svg>
-        </div>
-      </div>
-      <div class="fchip b"><i style="background:var(--brand-soft)">🔊</i>Reading question aloud…</div>
+      </figure>
+      <div class="fchip b" aria-hidden="true"><i style="background:var(--brand-soft)">🔊</i>Reading question aloud…</div>
     </div>
-  </div>
 
   <div class="stats">
     <div class="stat say"><b>37,159</b><span>research visits used for training</span></div>
@@ -1006,6 +1000,48 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&TTS.on)stopSpeak()}
 addEventListener("pagehide",()=>{if(TTS.ss)TTS.ss.cancel()});
 if(TTS.ss)TTS.ss.cancel(); // clear anything Chrome kept queued from a previous page load
 
+/* ============ DAILY QUOTE ============ */
+// [text, author]. Add or swap your own; keep author names accurate for real quotes.
+const QUOTES=[
+  ["You are safe, peaceful, and deeply cared for right now."],
+  ["You are surrounded by love, warmth, and gentle kindness."],
+  ["You can breathe in calmness and let go of all worry."],
+  ["You are allowed to move at your own beautiful, gentle pace."],
+  ["You are in a place of comfort, rest, and protection."],
+  ["You belong here, and you are completely safe."],
+  ["You are held in high regard and wrapped in gentle care."],
+  ["You can take comfort in the quiet stillness of this moment."],
+  ["You are loved for exactly who you are."],
+  ["You are more than any score.","ReMind"],
+  ["Your presence brings light and joy to those around you."],
+  ["You are a gift to the people who share your day."],
+  ["Your smile has the power to brighten up the room."],
+  ["You are deeply cherished, valued, and wanted."],
+  ["You are supported by people who truly appreciate you."],
+  ["Your value is absolute and never changes."],
+  ["You possess a beautiful, resilient spirit."],
+  ["Your inner light remains bright and beautiful."],
+  ["You carry yourself with a beautiful and natural dignity."],
+  ["Your heart is full of kindness and enduring strength."],
+  ["Today is a fresh canvas for comfort, calm, and happiness."],
+  ["You bring a special kind of warmth to this world."]
+];
+function quoteIndex(offset){
+  const d=new Date();let h=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+  // Scramble the date so the order looks random but stays the same all day.
+  h=Math.imul(h^(h>>>16),2246822507);h=Math.imul(h^(h>>>13),3266489909);h^=h>>>16;
+  return ((h>>>0)+offset)%QUOTES.length;
+}
+let qOff=0;
+function showQuote(){
+  const [t,by]=QUOTES[quoteIndex(qOff)];
+  $("qText").textContent=t;$("qBy").textContent="— "+by;
+  $("qDate").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
+  const q=$("dailyQuote");q.classList.remove("anim");void q.offsetWidth;q.classList.add("anim");
+}
+$("qNext").onclick=()=>{qOff++;showQuote()};
+$("qListen").onclick=()=>speakItems([{el:$("qText"),text:$("qText").textContent}],"quote");
+showQuote();
 applyA();renderUser();
 go("home");
 </script>
