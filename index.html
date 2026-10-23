@@ -375,10 +375,7 @@ dialog h2{margin-top:0}
     ReMind
   </button>
   <nav class="nav" aria-label="Main">
-    <button class="logo" data-go="home" aria-label="ReMind home">
-      <img src="logo.png" alt="" width="40" height="40">
-      ReMind
-    </button>
+    <button class="nl" data-go="home"><svg aria-hidden="true"><use href="#i-home"/></svg>Home</button>
     <button class="nl" data-go="screen"><svg aria-hidden="true"><use href="#i-check"/></svg>Screening</button>
     <button class="nl" data-go="games"><svg aria-hidden="true"><use href="#i-game"/></svg>Games</button>
     <button class="nl" data-go="track"><svg aria-hidden="true"><use href="#i-chart"/></svg>My results<span class="badge hidden" id="nbadge"></span></button>
@@ -631,7 +628,7 @@ function go(id){
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)go(b.dataset.go)});
 
 /* ============ SCREENING ============ */
-let qi=0,ans={},demo={};
+let qi=0,ans={},demo={},qLock=false; // qLock blocks extra clicks while the next question loads
 $("begin").onclick=()=>{
   const a=+$("age").value,e=+$("edu").value;
   if(!(a>=40&&a<=110)){$("err").textContent="Enter an age from 40 to 110.";return}
@@ -639,7 +636,7 @@ $("begin").onclick=()=>{
   $("err").textContent="";demo={age:a,sex:+$("sex").value,educ:e};qi=0;ans={};
   $("intro").classList.add("hidden");$("res").classList.add("hidden");$("quiz").classList.remove("hidden");showQ();
 };
-$("back").onclick=()=>{if(qi>0){qi--;showQ()}};
+$("back").onclick=()=>{if(!qLock&&qi>0){qi--;showQ()}};
 function showQ(){
   const q=Q[qi];
   $("qcount").textContent=`Question ${qi+1} of ${Q.length}`;$("qcat").textContent=q.g;
@@ -650,7 +647,7 @@ function showQ(){
   q.o.forEach(([label,val],i)=>{
     const b=document.createElement("button");b.className="opt"+(ans[q.id]===val?" sel":"");b.dataset.say=`${i+1}: ${label}.`;
     b.innerHTML=`<span class="k" aria-hidden="true">${i+1}</span><span>${label}</span>`+(q.o===SEV?`<span class="dots" aria-hidden="true">${[1,2,3].map(n=>`<i class="${n<=val?"f":""}"></i>`).join("")}</span>`:"");
-    b.onclick=()=>{ans[q.id]=val;b.classList.add("sel");stopSpeak();qi++;setTimeout(()=>qi<Q.length?showQ():finish(),140)};
+    b.onclick=()=>{if(qLock)return;qLock=true;ans[q.id]=val;b.classList.add("sel");stopSpeak();qi++;setTimeout(()=>{qLock=false;qi<Q.length?showQ():finish()},140)};
     box.appendChild(b);
   });
   const qb=$("qbody");qb.classList.remove("anim");void qb.offsetWidth;qb.classList.add("anim");
@@ -669,6 +666,12 @@ function finish(){
   const gds=GDS.reduce((n,q)=>n+(ans[q.id]===q.bad?1:0),0);
   const f={age:demo.age,sex:demo.sex,educ:demo.educ,ANXSEV:ans.ANXSEV,DEPDSEV:ans.DEPDSEV,APASEV:ans.APASEV,AGITSEV:ans.AGITSEV,MOT:ans.MOT,NITE:ans.NITE,APP:ans.APP,NACCGDS:gds,AFRAID:ans.g6,ENERGY:ans.g13};
   const p=predictRisk(f),high=p>=HIGH_CUTOFF,t=tier(p),c=tcls(t);
+  if(!Number.isFinite(p)){
+    const miss=Object.keys(B).filter(k=>k!=="b0"&&!Number.isFinite(f[k]));
+    toast("Something went wrong scoring this screening. Missing: "+miss.join(", "));
+    $("quiz").classList.add("hidden");$("intro").classList.remove("hidden");
+    return;
+  }
   const h=store.get("history",[]);h.push({d:new Date().toISOString(),p,t,high,f});store.set("history",h);
   store.set("mode",high?"high":"low");
   $("quiz").classList.add("hidden");
@@ -1038,8 +1041,11 @@ function quoteIndex(offset){
 }
 let qOff=0;
 function showQuote(){
-  const [t,by]=QUOTES[quoteIndex(qOff)];
-  $("qText").textContent=t;$("qBy").textContent="— "+by;
+  const item=QUOTES[quoteIndex(qOff)];
+  const [t,by]=Array.isArray(item)?item:[item];
+  $("qText").textContent=t;
+  $("qBy").textContent=by?"— "+by:"";
+  $("qBy").classList.toggle("hidden",!by);
   $("qDate").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
   const q=$("dailyQuote");q.classList.remove("anim");void q.offsetWidth;q.classList.add("anim");
 }
