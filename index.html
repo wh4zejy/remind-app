@@ -858,8 +858,8 @@ function setMode(m){amode=m;$("asubmit").textContent=m==="in"?"Log in":"Create a
 $("tabin").onclick=()=>setMode("in");$("tabup").onclick=()=>setMode("up");
 $("pw").addEventListener("keydown",e=>{if(e.key==="Enter")$("asubmit").click()});
 function renderUser(){$("authbtn").textContent=cur?"Log out":"Log in";$("authbtn").className=cur?"btn alt sm":"btn sm";$("authbtn").title=cur?"Logged in as "+cur:"";renderWho();updateBadge()}
-function login(u){cur=u;prof="";store.set("session",u);$("pw").value="";renderUser();toast("Welcome, "+u+"!");const t=pending||"screen";pending=null;go(t)}
-function logout(){cur=null;prof="";store.set("session",null);renderUser();go("home");toast("You are logged out.")}
+function login(u){cur=u;prof="";resetViews();store.set("session",u);$("pw").value="";renderUser();toast("Welcome, "+u+"!");const t=pending||"screen";pending=null;go(t)}
+function logout(){cur=null;prof="";resetViews();store.set("session",null);renderUser();go("home");toast("You are logged out.")}
 $("authbtn").onclick=()=>{if(cur)logout();else{pending=null;go("auth")}};
 $("asubmit").onclick=async()=>{
   const u=$("un").value.trim().toLowerCase(),pw=$("pw").value;
@@ -885,7 +885,14 @@ function renderWho(){
   $("whoSel").innerHTML=['<option value="">Myself</option>',...store.get("profiles",[]).map(n=>`<option value="${esc(n)}">${esc(n)}</option>`)].join("");
   $("whoSel").value=prof;
 }
-function switchPerson(){$("intro").classList.remove("hidden");$("quiz").classList.add("hidden");$("res").classList.add("hidden");updateBadge();go(curSec)}
+// Clear anything left on screen from the previous account or person.
+function resetViews(){
+  qi=0;ans={};qLock=false;$("intro").classList.remove("hidden");$("quiz").classList.add("hidden");
+  $("res").classList.add("hidden");$("res").innerHTML="";$("hist").innerHTML="";$("report").innerHTML="";
+  sOn=false;$("sword").textContent="Ready?";$("sword").style.color="";$("sstat").textContent="";$("snew").textContent="Start";
+  $("mgrid").innerHTML="";
+}
+function switchPerson(){resetViews();updateBadge();go(curSec)}
 $("whoSel").onchange=()=>{prof=$("whoSel").value;switchPerson()};
 const dlg=$("pdlg");
 $("addP").onclick=()=>{$("pname").value="";if(dlg.showModal){dlg.showModal();$("pname").focus()}else addPerson(prompt("Name of the person you are screening (for example, Mom)")||"")};
