@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#4f46e5">
 <meta name="description" content="ReMind is a free, private, 5-minute early screening for Alzheimer's disease, with brain games, progress tracking, and a doctor-ready report.">
 <title>ReMind – Early Alzheimer's Screening</title>
+<link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap">
@@ -73,7 +74,7 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-
 /* blur lives on a pseudo-element: backdrop-filter on header itself would trap the fixed mobile nav inside it */
 header::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--glass);backdrop-filter:saturate(180%) blur(18px);-webkit-backdrop-filter:saturate(180%) blur(18px)}
 .logo{display:flex;align-items:center;gap:10px;font:800 1.25rem/1 "Plus Jakarta Sans",sans-serif;letter-spacing:-.03em;color:var(--ink);background:none;border:0;cursor:pointer;padding:0}
-.logo svg{width:36px;height:36px;border-radius:11px;box-shadow:0 8px 18px -6px rgba(88,72,236,.6)}
+/* .logo img{width:40px;height:40px;object-fit:contain;background:#fff;border-radius:12px;padding:3px;box-shadow:0 0 0 1px var(--line),0 8px 18px -8px rgba(88,72,236,.55)} */
 .nav{display:flex;gap:4px;align-items:center;background:var(--surface-2);border:1px solid var(--line);padding:4px;border-radius:999px}
 .nl{display:inline-flex;align-items:center;gap:8px;background:none;border:0;color:var(--ink-2);font:inherit;font-size:.92rem;font-weight:700;padding:8px 16px;border-radius:999px;cursor:pointer;position:relative;transition:color .2s,background .2s,box-shadow .2s}
 .nl svg{width:18px;height:18px}
@@ -370,11 +371,14 @@ dialog h2{margin-top:0}
 
 <header>
   <button class="logo" data-go="home" aria-label="ReMind home">
-    <svg viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="11" fill="url(#lg)"/><path d="M7 19h5l2.5-6 4 11 3-8 1.8 3H29" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <img src="logo.png" alt="" width="40" height="40">
     ReMind
   </button>
   <nav class="nav" aria-label="Main">
-    <button class="nl" data-go="home"><svg aria-hidden="true"><use href="#i-home"/></svg>Home</button>
+    <button class="logo" data-go="home" aria-label="ReMind home">
+      <img src="logo.png" alt="" width="40" height="40">
+      ReMind
+    </button>
     <button class="nl" data-go="screen"><svg aria-hidden="true"><use href="#i-check"/></svg>Screening</button>
     <button class="nl" data-go="games"><svg aria-hidden="true"><use href="#i-game"/></svg>Games</button>
     <button class="nl" data-go="track"><svg aria-hidden="true"><use href="#i-chart"/></svg>My results<span class="badge hidden" id="nbadge"></span></button>
