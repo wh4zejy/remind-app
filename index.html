@@ -253,6 +253,19 @@ main{max-width:1120px;margin:0 auto;padding:26px 20px 70px}
 .stroop{font-size:clamp(2.8rem,9vw,4.2rem);font-weight:800;text-align:center;margin:22px 0 18px;padding:34px 10px;border-radius:20px;background:#fff;border:1px solid var(--line);letter-spacing:-.02em;line-height:1.1;color:#13132b}
 .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .cols .btn{padding:15px}
+.trail{grid-column:1/-1}
+.tbar{display:flex;justify-content:space-between;align-items:center;margin:16px 0 10px}
+.ttime{font-variant-numeric:tabular-nums;font-weight:800;font-size:1.3rem}
+.tboard{position:relative;aspect-ratio:2/1;max-width:900px;margin:0 auto;background:var(--surface-2);border:1px solid var(--line);border-radius:18px;overflow:hidden;touch-action:manipulation}
+.tboard svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.tboard line{stroke:var(--brand);stroke-width:3;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.tdot{position:absolute;width:50px;height:50px;margin:-25px 0 0 -25px;padding:0;border-radius:50%;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;font-size:1.1rem;cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-sm);transition:background .15s,border-color .15s}
+.tdot:hover{border-color:var(--brand)}
+.tdot.done{background:var(--grad);color:var(--on-grad);border-color:transparent;cursor:default}
+.tdot.bad{animation:shake .35s;border-color:var(--warn);background:var(--warn-soft)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.tmsg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:var(--muted);font-weight:600}
+@media (max-width:760px){.tboard{aspect-ratio:3/4}.tdot{width:44px;height:44px;margin:-22px 0 0 -22px}}
 
 /* ============ TRACK ============ */
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
@@ -545,6 +558,13 @@ dialog h2{margin-top:0}
       <p id="sstat" class="gstat" aria-live="polite"></p>
       <div class="row" style="justify-content:center"><button class="btn" id="snew">Start</button></div>
     </div>
+    <div class="panel trail">
+      <div class="ghead"><div class="ic" aria-hidden="true">🔗</div><div><h2>Trail connect</h2><p class="muted">Tap the circles in order as fast as you can. Part A: 1 → 2 → 3… Part B: switch between numbers and letters, 1 → A → 2 → B…</p></div></div>
+      <div class="tbar"><span class="chip" id="tpart">Part A</span><span class="ttime" id="ttime">0.0s</span></div>
+      <div class="tboard" id="tboard"><svg id="tlines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg><div class="tmsg" id="tmsg">Press Start when you're ready.</div></div>
+      <p id="tstat" class="gstat" aria-live="polite"></p>
+      <div class="row" style="justify-content:center"><button class="btn" id="tstart">Start Part A</button></div>
+    </div>
   </div>
 </section>
 
@@ -631,6 +651,7 @@ function go(id){
   curSec=id;updateBadge();
   secs.forEach(s=>{const el=$(s),on=s===id;el.classList.toggle("hidden",!on);if(on){el.classList.remove("anim");void el.offsetWidth;el.classList.add("anim")}});
   document.querySelectorAll(".nl").forEach(b=>{if(b.dataset.go===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  if(id!=="games"&&T.on)tReset(); // don't leave the timer running on another page
   if(id==="games")gamesInit();
   if(id==="track"){renderHist();markAlertsSeen();updateBadge()}
   window.scrollTo(0,0);
@@ -802,14 +823,15 @@ function renderHist(){
     html+=`<div class="panel"><h2>Risk score over time</h2>${chart(h.slice(-8).map(x=>({x:sd(x.d),y:x.p})),{min:0,max:1,line:HIGH_CUTOFF,fmt:v=>v.toFixed(1),label:"Risk score trend"})}<p class="muted" style="margin:6px 0 0">Dashed line: high-risk cutoff (0.5). Lower is better.</p></div>`;
     html+=`<div class="panel"><h2>Screenings</h2><div class="tw"><table><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.slice().reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${lvl(x.t)}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table></div></div>`;
   }
-  const mm=g.filter(x=>x.g==="Memory match"&&x.v!=null).slice(-8),ss=g.filter(x=>x.g==="Stroop"&&x.v!=null).slice(-8);
-  if(mm.length||ss.length){
+  const mm=g.filter(x=>x.g==="Memory match"&&x.v!=null).slice(-8),ss=g.filter(x=>x.g==="Stroop"&&x.v!=null).slice(-8),tc=g.filter(x=>x.g==="Trail connect"&&x.v!=null).slice(-8);
+  if(mm.length||ss.length||tc.length){
     html+=`<div class="twocol">`;
     if(mm.length)html+=`<div class="panel"><h2>Memory match: moves</h2>${chart(mm.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...mm.map(x=>x.v))+2),fmt:v=>Math.round(v),label:"Memory match moves trend"})}<p class="muted" style="margin:6px 0 0">Fewer moves is better.</p></div>`;
     if(ss.length)html+=`<div class="panel"><h2>Color word test: seconds</h2>${chart(ss.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...ss.map(x=>x.v))+1),fmt:v=>v.toFixed(1),label:"Color word test time trend"})}<p class="muted" style="margin:6px 0 0">Faster is better.</p></div>`;
     html+=`</div>`;
   }
   if(h.length||g.length)html+=`<div class="row" style="margin-top:22px"><button class="btn" id="rep2">${ico("file")}Download doctor report</button><button class="btn ghost" id="clr">Clear this person's data</button></div>`;
+  if(tc.length)html+=`<div class="panel"><h2>Trail connect: Part B seconds</h2>${chart(tc.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...tc.map(x=>x.v))+2),fmt:v=>Math.round(v),label:"Trail connect Part B time trend"})}<p class="muted" style="margin:6px 0 0">Faster is better.</p></div>`;
   $("hist").innerHTML=html;
   const c=$("clr");if(c)c.onclick=()=>{if(!confirm("Delete all screenings and game scores for "+(prof||"yourself")+"? This can't be undone."))return;store.set("history",[]);store.set("gameLog",[]);store.set("mode",null);renderHist();updateBadge();toast("Data cleared.")};
   const r2=$("rep2");if(r2)r2.onclick=printReport;
@@ -861,6 +883,60 @@ function sNext(){
   $("sstat").textContent=`Round ${sRound+1} of 10`;sT0=performance.now();
 }
 function sAnswer(n){if(!sOn)return;sTimes.push(performance.now()-sT0);if(n===sCur)sOk++;sRound++;sNext()}
+  /* Trail connect (based on the Trail Making Test). Part A: 1-2-3…  Part B: 1-A-2-B… */
+const TN=12; // circles per part
+const T={part:"A",seq:[],pos:[],i:0,t0:0,timer:0,errs:0,res:{},on:false};
+const tSeq=p=>Array.from({length:TN},(_,i)=>p==="A"?String(i+1):i%2?String.fromCharCode(65+(i>>1)):String((i>>1)+1));
+// Random spots that don't overlap; spacing shrinks a little if it can't fit them all.
+function tLayout(n,w,h){
+  const pad=32,pts=[];let min=Math.sqrt(w*h/n)*.8,fails=0;
+  while(pts.length<n){
+    const x=pad+Math.random()*(w-2*pad),y=pad+Math.random()*(h-2*pad);
+    if(pts.every(p=>Math.hypot(p.x-x,p.y-y)>=min)){pts.push({x,y});fails=0}
+    else if(++fails>300){pts.length=0;fails=0;min*=.92}
+  }
+  return pts.map(p=>({x:p.x/w*100,y:p.y/h*100}));
+}
+function tClear(){$("tboard").querySelectorAll(".tdot").forEach(d=>d.remove());$("tlines").innerHTML=""}
+function tStart(){
+  const board=$("tboard"),r=board.getBoundingClientRect();
+  tClear();$("tmsg").classList.add("hidden");$("tstart").classList.add("hidden");
+  T.seq=tSeq(T.part);T.pos=tLayout(TN,r.width,r.height);T.i=0;T.errs=0;T.on=true;
+  T.seq.forEach((lab,k)=>{const b=document.createElement("button");b.className="tdot";b.textContent=lab;b.style.left=T.pos[k].x+"%";b.style.top=T.pos[k].y+"%";b.onclick=()=>tTap(k,b);board.appendChild(b)});
+  $("tpart").textContent="Part "+T.part;
+  $("tstat").textContent=T.part==="A"?"Tap 1, then 2, then 3…":"Tap 1, then A, then 2, then B…";
+  T.t0=performance.now();clearInterval(T.timer);
+  T.timer=setInterval(()=>{$("ttime").textContent=((performance.now()-T.t0)/1000).toFixed(1)+"s"},100);
+}
+function tTap(k,b){
+  if(!T.on||b.classList.contains("done"))return;
+  if(k!==T.i){T.errs++;b.classList.remove("bad");void b.offsetWidth;b.classList.add("bad");$("tstat").textContent="Not quite. Look for "+T.seq[T.i]+".";return}
+  b.classList.add("done");$("tstat").textContent="";
+  if(k>0){const a=T.pos[k-1],c=T.pos[k];$("tlines").insertAdjacentHTML("beforeend",`<line x1="${a.x}" y1="${a.y}" x2="${c.x}" y2="${c.y}"/>`)}
+  if(++T.i===TN)tDone();
+}
+function tDone(){
+  T.on=false;clearInterval(T.timer);
+  const s=(performance.now()-T.t0)/1000;$("ttime").textContent=s.toFixed(1)+"s";
+  T.res[T.part]={s,errs:T.errs};
+  if(T.part==="A"){
+    T.part="B";$("tstart").textContent="Start Part B";
+    $("tstat").textContent=`Part A done in ${s.toFixed(1)}s. Next, switch between numbers and letters.`;
+  }else{
+    const a=T.res.A,b=T.res.B,er=a.errs+b.errs;
+    $("tstat").textContent=`Part A ${a.s.toFixed(1)}s · Part B ${b.s.toFixed(1)}s · ${er} ${er===1?"mistake":"mistakes"}`;
+    logGame("Trail connect",`A ${a.s.toFixed(1)}s, B ${b.s.toFixed(1)}s, ${er} ${er===1?"mistake":"mistakes"}`,+b.s.toFixed(1));
+    toast("Score saved to My results.");
+    T.part="A";T.res={};$("tstart").textContent="Play again";
+  }
+  $("tstart").classList.remove("hidden");
+}
+function tReset(){
+  T.on=false;clearInterval(T.timer);T.part="A";T.res={};tClear();
+  $("tmsg").classList.remove("hidden");$("ttime").textContent="0.0s";$("tpart").textContent="Part A";
+  $("tstat").textContent="";$("tstart").textContent="Start Part A";$("tstart").classList.remove("hidden");
+}
+$("tstart").onclick=tStart;
 
 /* ============ LOGIN (local to this browser) ============ */
 let amode="in";
@@ -903,7 +979,7 @@ function resetViews(){
   qi=0;ans={};qLock=false;$("intro").classList.remove("hidden");$("quiz").classList.add("hidden");
   $("res").classList.add("hidden");$("res").innerHTML="";$("hist").innerHTML="";$("report").innerHTML="";
   sOn=false;$("sword").textContent="Ready?";$("sword").style.color="";$("sstat").textContent="";$("snew").textContent="Start";
-  $("mgrid").innerHTML="";
+  $("mgrid").innerHTML="";tReset();
   $("un").value="";$("pw").value="";aerr("");
 }
 function switchPerson(){resetViews();updateBadge();go(curSec)}
