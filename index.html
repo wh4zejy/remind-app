@@ -376,11 +376,13 @@ dialog h2{margin-top:0}
   <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
   <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></symbol>
   <symbol id="i-redo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9s1.3-6.4 3.8-9z"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
 </svg>
 
 <div class="a11y" role="toolbar" aria-label="Accessibility options">
   <span class="lbl"><svg><use href="#i-a11y"/></svg><span>Accessibility</span></span>
+  <button id="langb" class="no-i18n" lang="es" aria-label="Cambiar a español"><svg><use href="#i-globe"/></svg>Español</button>
   <button id="fsm" aria-label="Smaller text">A−</button>
   <button id="fsp" aria-label="Larger text">A+</button>
   <button id="hcb" aria-pressed="false"><svg><use href="#i-contrast"/></svg>High contrast</button>
@@ -442,6 +444,7 @@ dialog h2{margin-top:0}
       </figure>
       <div class="fchip b" aria-hidden="true"><i style="background:var(--brand-soft)">🔊</i>Reading question aloud…</div>
     </div>
+  </div>
 
   <div class="stats">
     <div class="stat say"><b>37,159</b><span>research visits used for training</span></div>
@@ -466,8 +469,8 @@ dialog h2{margin-top:0}
     <h2>More than a quiz</h2>
   </div>
   <div class="feats">
-    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-check"/></svg></div><h3>Research-based screening</h3><p>A logistic regression model trained on National Alzheimer's Coordinating Center data.</p></div>
-    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-game"/></svg></div><h3>Brain games</h3><p>Memory match and the Stroop color-word test, with scores tracked over time.</p></div>
+    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-check"/></svg></div><h3>Research-based screening</h3><p>A neural network trained on National Alzheimer's Coordinating Center data.</p></div>
+    <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-game"/></svg></div><h3>Brain games</h3><p>Memory match, a color-word test, and trail connect, with scores tracked over time.</p></div>
     <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-chart"/></svg></div><h3>Trend tracking</h3><p>Charts show how your score and game results change between visits.</p></div>
     <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-users"/></svg></div><h3>Caregiver mode</h3><p>Screen a parent or loved one and see everyone's alerts on one dashboard.</p></div>
     <div class="feat"><div class="ic"><svg aria-hidden="true"><use href="#i-file"/></svg></div><h3>Doctor report</h3><p>Print or save a one-page summary to bring to an appointment.</p></div>
@@ -602,6 +605,104 @@ const store={get(k,d){try{const v=localStorage.getItem(pk(k));return v?JSON.pars
 set(k,v){try{localStorage.setItem(pk(k),JSON.stringify(v))}catch(e){}}};
 const $=id=>document.getElementById(id);
 const ico=n=>`<svg aria-hidden="true"><use href="#i-${n}"/></svg>`;
+/* ============ LANGUAGE (English / Español) ============
+   The page is written in English. When Spanish is on, every piece of text that appears on the page is
+   swapped for its translation (ES for exact text, ES_PAT for text with numbers or names in it). A watcher
+   (MutationObserver) translates anything the app adds later, so the rest of the code can keep using English.
+   Saved data (results, game scores) stays in English; only what's displayed changes. */
+let LANG=(()=>{try{const a=JSON.parse(localStorage.getItem("a11y")||"{}");if(a.lang)return a.lang}catch(e){}return /^es/i.test(navigator.language||"")?"es":"en"})();
+const LOC=()=>LANG==="es"?"es":undefined; // date format
+const ES={"Accessibility": "Accesibilidad","Accessibility options": "Opciones de accesibilidad","Smaller text": "Texto más pequeño","Larger text": "Texto más grande","High contrast": "Alto contraste","Auto-read questions": "Leer preguntas automáticamente","Read each screening question aloud automatically": "Leer en voz alta cada pregunta automáticamente","Change how fast ReMind reads aloud": "Cambiar la velocidad de lectura","Read page aloud": "Leer página en voz alta","Stop reading": "Dejar de leer","ReMind home": "Inicio de ReMind","Main": "Principal","Home": "Inicio","Screening": "Evaluación","Games": "Juegos","My results": "Mis resultados","Log in": "Iniciar sesión","Log out": "Cerrar sesión","Create account": "Crear cuenta","Screening for": "Evaluación para","Add a person": "Agregar a una persona","Myself": "Yo","FREE": "GRATIS","Private · 5 minutes · No sign-up fees": "Privado · 5 minutos · Sin costo","Notice memory changes": "Detecte los cambios de memoria","early.": "a tiempo.","ReMind is a free early screening for Alzheimer's disease. Answer a short questionnaire, and a model trained on 37,159 research visits from the National Alzheimer's Coordinating Center estimates your risk level from your age, mood, and behavior.": "ReMind es una evaluación temprana y gratuita de la enfermedad de Alzheimer. Responda un breve cuestionario y un modelo entrenado con 37,159 visitas de investigación del National Alzheimer's Coordinating Center (Centro Nacional de Coordinación del Alzheimer de EE. UU.) estimará su nivel de riesgo según su edad, su estado de ánimo y su comportamiento.","Start free screening": "Comenzar evaluación gratuita","Try the brain games": "Probar los juegos mentales","Data stays on your device": "Sus datos se quedan en su dispositivo","Built on NACC research data": "Basado en datos de investigación del NACC","Reads aloud for you": "Le lee en voz alta","Memory match · 14 moves": "Parejas de memoria · 14 movimientos","Today's thought": "Pensamiento del día","Another one": "Otro","Read today's thought aloud": "Leer en voz alta el pensamiento del día","Reading question aloud…": "Leyendo la pregunta…","research visits used for training": "visitas de investigación usadas para entrenar el modelo","cross-validated accuracy (AUC)": "precisión con validación cruzada (AUC)","short, plain-language questions": "preguntas breves y sencillas","of your answers kept on your device": "de sus respuestas se guardan en su dispositivo","How it works": "Cómo funciona","Three steps. Five minutes.": "Tres pasos. Cinco minutos.","Built for older adults and the people who care for them.": "Diseñado para adultos mayores y para quienes los cuidan.","Answer 22 questions": "Responda 22 preguntas","About mood, behavior, sleep, and appetite, for yourself or someone you care for.": "Sobre el estado de ánimo, el comportamiento, el sueño y el apetito, para usted o para alguien a quien cuida.","Get your risk level": "Conozca su nivel de riesgo","See your level, plus which answers raised or lowered the score.": "Vea su nivel y qué respuestas subieron o bajaron el puntaje.","Follow your plan": "Siga su plan","Higher risk: daily brain games and a doctor report. Lower risk: check-ins every 3 months.": "Riesgo más alto: juegos mentales diarios y un informe para el médico. Riesgo más bajo: controles cada 3 meses.","Everything in one place": "Todo en un solo lugar","More than a quiz": "Más que un cuestionario","Research-based screening": "Evaluación basada en investigación","A neural network trained on National Alzheimer's Coordinating Center data.": "Una red neuronal entrenada con datos del National Alzheimer's Coordinating Center.","Brain games": "Juegos mentales","Memory match, a color-word test, and trail connect, with scores tracked over time.": "Parejas de memoria, una prueba de colores y palabras, y conectar el camino, con puntajes registrados a lo largo del tiempo.","Trend tracking": "Seguimiento de tendencias","Charts show how your score and game results change between visits.": "Los gráficos muestran cómo cambian su puntaje y sus resultados en los juegos entre una visita y otra.","Caregiver mode": "Modo cuidador","Screen a parent or loved one and see everyone's alerts on one dashboard.": "Evalúe a un padre, una madre o un ser querido y vea las alertas de todos en un solo panel.","Doctor report": "Informe para el médico","Print or save a one-page summary to bring to an appointment.": "Imprima o guarde un resumen de una página para llevar a su cita.","Smart alerts": "Alertas inteligentes","Get reminders when a re-screen is due or a score rises.": "Reciba recordatorios cuando le toque una nueva evaluación o cuando su puntaje suba.","Accessible by design": "Accesible por diseño","Made for every mind and every eye.": "Hecho para cada mente y cada mirada.","Memory changes often come with vision and hearing changes. ReMind can read every page and question aloud, highlighting each line as it goes.": "Los cambios de memoria suelen venir acompañados de cambios en la vista y el oído. ReMind puede leer en voz alta cada página y cada pregunta, resaltando cada línea mientras lee.","Hear it now": "Escúchelo ahora","Read aloud with follow-along highlight": "Lectura en voz alta con resaltado","Text up to 160% larger": "Texto hasta un 160% más grande","High-contrast mode": "Modo de alto contraste","Large buttons and keyboard shortcuts": "Botones grandes y atajos de teclado","ReMind is a screening tool, not a diagnosis. It does not replace a doctor. If you are worried about memory changes, talk to a healthcare professional.": "ReMind es una herramienta de evaluación, no un diagnóstico. No reemplaza a un médico. Si le preocupan los cambios de memoria, hable con un profesional de la salud.","· Screening 2.0 · Not medical advice": "· Evaluación 2.0 · No es consejo médico","Screening 2.0 · Not medical advice": "Evaluación 2.0 · No es consejo médico","Welcome": "Bienvenido","to ReMind": "a ReMind","Log in to save your results and track them over time.": "Inicie sesión para guardar sus resultados y seguirlos con el tiempo.","Username": "Nombre de usuario","Password": "Contraseña","(6+ characters)": "(6 o más caracteres)","Your account and results are saved only on this device.": "Su cuenta y sus resultados se guardan solo en este dispositivo.","Username: 3 to 20 letters or numbers.": "Usuario: de 3 a 20 letras o números.","Password must be at least 6 characters.": "La contraseña debe tener al menos 6 caracteres.","This browser can't secure passwords here. Open the site over https.": "Este navegador no puede proteger contraseñas aquí. Abra el sitio con https.","That username is taken.": "Ese nombre de usuario ya existe.","Wrong username or password.": "Usuario o contraseña incorrectos.","You are logged out.": "Ha cerrado sesión.","Cognitive Wellness": "Chequeo de bienestar","Check": "cognitivo","About 5 minutes · 22 questions · Answer honestly, there are no wrong answers.": "Unos 5 minutos · 22 preguntas · Responda con sinceridad; no hay respuestas incorrectas.","Step 1 of 2": "Paso 1 de 2","About you": "Sobre usted","Answer for yourself, or for the person you care for.": "Responda por usted o por la persona a quien cuida.","Age": "Edad","Sex": "Sexo","Male": "Masculino","Female": "Femenino","Years of education": "Años de estudio","(12 = high school, 16 = bachelor's)": "(12 = secundaria completa, 16 = licenciatura)","Begin questions": "Comenzar preguntas","Enter an age from 40 to 110.": "Ingrese una edad entre 40 y 110.","Enter years of education from 0 to 30.": "Ingrese entre 0 y 30 años de estudio.","Screening progress": "Progreso de la evaluación","Read this question aloud": "Leer esta pregunta en voz alta","Read aloud": "Leer en voz alta","Back": "Atrás","Press": "Pulse","to answer": "para responder","Mood and behavior in the past month": "Estado de ánimo y comportamiento en el último mes","How you have felt over the past week": "Cómo se ha sentido durante la última semana","How much anxiety has there been (worry, nervousness, tension)?": "¿Cuánta ansiedad ha habido (preocupación, nerviosismo, tensión)?","How much sadness or low mood has there been (seems down, tearful)?": "¿Cuánta tristeza o desánimo ha habido (se ve decaído, con ganas de llorar)?","How much apathy has there been (less interest in usual activities or in other people's plans)?": "¿Cuánta apatía ha habido (menos interés en las actividades habituales o en los planes de los demás)?","How much agitation or irritability has there been (resists help, hard to handle, arguing)?": "¿Cuánta agitación o irritabilidad ha habido (rechaza la ayuda, es difícil de manejar, discute)?","Have there been repetitive movements, like pacing, fidgeting, or doing the same activity over and over?": "¿Ha habido movimientos repetitivos, como caminar de un lado a otro, estar inquieto o hacer la misma actividad una y otra vez?","Have there been night-time disruptions, like waking up and getting dressed in the middle of the night?": "¿Ha habido alteraciones durante la noche, como despertarse y vestirse en medio de la noche?","Have there been changes in appetite or eating, such as weight change or new food preferences?": "¿Ha habido cambios en el apetito o la alimentación, como cambios de peso o nuevas preferencias de comida?","Are you basically satisfied with your life?": "¿Está básicamente satisfecho(a) con su vida?","Have you dropped many of your activities and interests?": "¿Ha dejado muchas de sus actividades e intereses?","Do you feel that your life is empty?": "¿Siente que su vida está vacía?","Do you often get bored?": "¿Se aburre con frecuencia?","Are you in good spirits most of the time?": "¿Está de buen humor la mayor parte del tiempo?","Are you afraid that something bad is going to happen to you?": "¿Tiene miedo de que le vaya a pasar algo malo?","Do you feel happy most of the time?": "¿Se siente feliz la mayor parte del tiempo?","Do you often feel helpless?": "¿Se siente desamparado(a) con frecuencia?","Do you prefer to stay at home rather than go out and do new things?": "¿Prefiere quedarse en casa en lugar de salir y hacer cosas nuevas?","Do you feel you have more problems with memory than most?": "¿Siente que tiene más problemas de memoria que la mayoría de la gente?","Do you think it is wonderful to be alive now?": "¿Cree que es maravilloso estar vivo(a) ahora?","Do you feel pretty worthless the way you are now?": "¿Se siente inútil tal como está ahora?","Do you feel full of energy?": "¿Se siente lleno(a) de energía?","Do you feel that your situation is hopeless?": "¿Siente que su situación no tiene esperanza?","Do you think most people are better off than you are?": "¿Cree que la mayoría de la gente está mejor que usted?","Higher risk pattern": "Patrón de riesgo más alto","Lower risk pattern": "Patrón de riesgo más bajo","out of 100": "de 100","Your answers match patterns seen more often in people who later develop Alzheimer's. This is not a diagnosis. Please share this result with your doctor. You can use the brain games and track changes over time.": "Sus respuestas coinciden con patrones que se ven con más frecuencia en personas que luego desarrollan Alzheimer. Esto no es un diagnóstico. Por favor, comparta este resultado con su médico. Puede usar los juegos mentales y seguir los cambios con el tiempo.","Your answers match patterns seen more often in people without Alzheimer's. Re-screen every 3 months so any change is caught early. Exercise, sleep, and social time help.": "Sus respuestas coinciden con patrones que se ven con más frecuencia en personas sin Alzheimer. Vuelva a evaluarse cada 3 meses para detectar a tiempo cualquier cambio. El ejercicio, el buen descanso y la vida social ayudan.","Your mood answers suggest low mood. This is common and treatable, so mention it to your doctor. If you ever feel unsafe, call or text 988 (US).": "Sus respuestas sobre el estado de ánimo sugieren desánimo. Es algo común y tratable, así que coménteselo a su médico. Si alguna vez no se siente seguro(a), llame o envíe un mensaje de texto al 988 (EE. UU.); marque 2 para español.","What influenced this result": "Qué influyó en este resultado","Compared with a typical healthy 65-year-old.": "En comparación con una persona sana típica de 65 años.","Lowered the score": "Bajó el puntaje","Raised the score": "Subió el puntaje","Anxiety": "Ansiedad","Low mood": "Desánimo","Apathy": "Apatía","Agitation": "Agitación","Depression scale (GDS)": "Escala de depresión (GDS)","Feeling full of energy": "Sentirse lleno(a) de energía","Fear something bad will happen": "Miedo a que pase algo malo","Repetitive movements": "Movimientos repetitivos","Night-time disruptions": "Alteraciones nocturnas","Appetite changes": "Cambios en el apetito","The model was trained on research-clinic data. The level compares you with that group, so it is not your personal chance of getting Alzheimer's.": "El modelo se entrenó con datos de clínicas de investigación. El nivel lo compara con ese grupo, así que no es su probabilidad personal de tener Alzheimer.","Open brain games": "Abrir juegos mentales","See my results": "Ver mis resultados","Email result": "Enviar resultado por correo","Screen again": "Evaluar de nuevo","Complete a screening first.": "Primero complete una evaluación.","Showing results for": "Resultados de:","Latest level": "Último nivel","Screenings": "Evaluaciones","Games played": "Juegos jugados","Caregiver dashboard": "Panel del cuidador","Alerts": "Alertas","Person": "Persona","Latest": "Último","None yet": "Ninguno aún","No screening yet.": "Aún no hay evaluaciones.","Higher risk pattern. Share the result with a doctor.": "Patrón de riesgo más alto. Comparta el resultado con un médico.","A re-screening is due (over 3 months).": "Le toca una nueva evaluación (más de 3 meses).","✓ All clear": "✓ Todo bien","Use \"Add a person\" at the top to screen someone you care for. After a screening, \"Email result\" sends a summary to a family member or doctor.": "Use \"Agregar a una persona\" arriba para evaluar a alguien a quien cuida. Después de una evaluación, \"Enviar resultado por correo\" envía un resumen a un familiar o al médico.","No screenings yet": "Aún no hay evaluaciones","Take the 5-minute screening to see your risk level and start tracking.": "Haga la evaluación de 5 minutos para conocer su nivel de riesgo y empezar el seguimiento.","Start screening": "Comenzar evaluación","Risk score over time": "Puntaje de riesgo con el tiempo","Dashed line: high-risk cutoff (0.5). Lower is better.": "Línea punteada: límite de riesgo alto (0.5). Más bajo es mejor.","Date": "Fecha","Level": "Nivel","Score": "Puntaje","Game": "Juego","Result": "Resultado","Memory match: moves": "Parejas de memoria: movimientos","Fewer moves is better.": "Menos movimientos es mejor.","Color word test: seconds": "Prueba de colores y palabras: segundos","Faster is better.": "Más rápido es mejor.","Trail connect: Part B seconds": "Conectar el camino: segundos de la parte B","Download doctor report": "Descargar informe para el médico","Clear this person's data": "Borrar los datos de esta persona","Data cleared.": "Datos borrados.","Complete at least two to see a trend.": "Complete al menos dos para ver una tendencia.","Trend chart": "Gráfico de tendencia","Risk score trend": "Tendencia del puntaje de riesgo","Memory match moves trend": "Tendencia de movimientos en parejas de memoria","Color word test time trend": "Tendencia de tiempo en la prueba de colores","Trail connect Part B time trend": "Tendencia de tiempo en la parte B de conectar el camino","Short daily exercises. Your scores are saved to My results.": "Ejercicios diarios breves. Sus puntajes se guardan en Mis resultados.","Your plan: one round of each game every day. Scores are saved to My results.": "Su plan: una ronda de cada juego todos los días. Los puntajes se guardan en Mis resultados.","You are in monitoring mode. Games are optional. Re-screen every 3 months.": "Está en modo de seguimiento. Los juegos son opcionales. Vuelva a evaluarse cada 3 meses.","Take the screening first to get a personal plan. You can play any time.": "Haga primero la evaluación para obtener un plan personal. Puede jugar cuando quiera.","Brain": "Juegos","games": "mentales","My": "Mis","results": "resultados","Memory match": "Parejas de memoria","Stroop": "Prueba de colores","Trail connect": "Conectar el camino","Flip two cards at a time and find all 8 pairs.": "Voltee dos cartas a la vez y encuentre los 8 pares.","New game": "Nuevo juego","Hidden card": "Carta oculta","Nice work! Score saved to My results.": "¡Buen trabajo! Puntaje guardado en Mis resultados.","Color word test": "Prueba de colores y palabras","Tap the color of the ink, not the word. 10 rounds.": "Toque el color de la tinta, no la palabra. 10 rondas.","Ready?": "¿Preparado(a)?","Start": "Comenzar","Restart": "Reiniciar","Done!": "¡Terminado!","Play again": "Jugar de nuevo","Score saved to My results.": "Puntaje guardado en Mis resultados.","Red": "Rojo","Blue": "Azul","Green": "Verde","Orange": "Naranja","Tap the circles in order as fast as you can. Part A: 1 → 2 → 3… Part B: switch between numbers and letters, 1 → A → 2 → B…": "Toque los círculos en orden lo más rápido que pueda. Parte A: 1 → 2 → 3… Parte B: alterne entre números y letras, 1 → A → 2 → B…","Press Start when you're ready.": "Pulse Comenzar cuando esté listo(a).","Start Part A": "Comenzar parte A","Start Part B": "Comenzar parte B","Tap 1, then 2, then 3…": "Toque 1, luego 2, luego 3…","Tap 1, then A, then 2, then B…": "Toque 1, luego A, luego 2, luego B…","Reading aloud…": "Leyendo en voz alta…","Stop": "Detener","Screen someone you care for. Their results are kept separate from yours.": "Evalúe a alguien a quien cuida. Sus resultados se guardan aparte de los suyos.","Name": "Nombre","For example, Mom": "Por ejemplo, Mamá","Cancel": "Cancelar","Add person": "Agregar persona","Name of the person you are screening (for example, Mom)": "Nombre de la persona que va a evaluar (por ejemplo, Mamá)","Please enter a name.": "Escriba un nombre.","Please choose a different name.": "Elija otro nombre.","Questions will be read aloud automatically.": "Las preguntas se leerán en voz alta automáticamente.","Auto-read is off.": "La lectura automática está desactivada.","Read aloud isn't available in this browser. Try Chrome, Edge, or Safari.": "La lectura en voz alta no está disponible en este navegador. Pruebe con Chrome, Edge o Safari.","Nothing to read on this page.": "No hay nada que leer en esta página.","Your browser blocked audio. Tap the read-aloud button again.": "Su navegador bloqueó el audio. Toque de nuevo el botón de lectura.","ReMind screening report": "Informe de evaluación de ReMind","Person:": "Persona:","Date:": "Fecha:","Higher risk pattern. This is a screening tool, not a diagnosis.": "Patrón de riesgo más alto. Esta es una herramienta de evaluación, no un diagnóstico.","Lower risk pattern. This is a screening tool, not a diagnosis.": "Patrón de riesgo más bajo. Esta es una herramienta de evaluación, no un diagnóstico.","This is a screening tool, not a diagnosis.": "Esta es una herramienta de evaluación, no un diagnóstico.","Main factors": "Factores principales","Screening history": "Historial de evaluaciones","Recent game results": "Resultados recientes de juegos","Model: neural network trained on National Alzheimer's Coordinating Center data (cross-validated AUC 0.84). It was trained on research-clinic participants, so levels compare you with that group. Please discuss these results with a doctor.": "Modelo: red neuronal entrenada con datos del National Alzheimer's Coordinating Center (AUC con validación cruzada de 0.84). Se entrenó con participantes de clínicas de investigación, así que los niveles lo comparan con ese grupo. Hable de estos resultados con un médico.","You are safe, peaceful, and deeply cared for right now.": "Ahora mismo está a salvo, en paz y rodeado(a) de cariño.","You are surrounded by love, warmth, and gentle kindness.": "Está rodeado(a) de amor, calidez y amabilidad.","You can breathe in calmness and let go of all worry.": "Puede respirar con calma y soltar toda preocupación.","You are allowed to move at your own beautiful, gentle pace.": "Puede avanzar a su propio ritmo, con calma y sin prisa.","You are in a place of comfort, rest, and protection.": "Está en un lugar de comodidad, descanso y protección.","You belong here, and you are completely safe.": "Usted pertenece aquí y está completamente a salvo.","You are held in high regard and wrapped in gentle care.": "Se le aprecia mucho y se le cuida con ternura.","You can take comfort in the quiet stillness of this moment.": "Puede encontrar consuelo en la calma de este momento.","You are loved for exactly who you are.": "Le quieren tal como es.","You are more than any score.": "Usted es más que cualquier puntaje.","Your presence brings light and joy to those around you.": "Su presencia trae luz y alegría a quienes le rodean.","You are a gift to the people who share your day.": "Usted es un regalo para quienes comparten su día.","Your smile has the power to brighten up the room.": "Su sonrisa tiene el poder de iluminar la habitación.","You are deeply cherished, valued, and wanted.": "Usted es profundamente querido(a), valorado(a) y apreciado(a).","You are supported by people who truly appreciate you.": "Le apoyan personas que de verdad le aprecian.","Your value is absolute and never changes.": "Su valor es absoluto y nunca cambia.","You possess a beautiful, resilient spirit.": "Usted tiene un espíritu hermoso y fuerte.","Your inner light remains bright and beautiful.": "Su luz interior sigue brillante y hermosa.","You carry yourself with a beautiful and natural dignity.": "Usted se conduce con una dignidad hermosa y natural.","Your heart is full of kindness and enduring strength.": "Su corazón está lleno de bondad y de una fuerza duradera.","Today is a fresh canvas for comfort, calm, and happiness.": "Hoy es un lienzo nuevo para la comodidad, la calma y la felicidad.","You bring a special kind of warmth to this world.": "Usted trae una calidez especial a este mundo."};
+const OPT_ES={None:"Nada",Mild:"Leve",Moderate:"Moderada",Severe:"Grave",Yes:"Sí",No:"No"}; // answer buttons
+const TIER_ES={"Very low":"Muy bajo",Low:"Bajo",Moderate:"Moderado",High:"Alto","Very high":"Muy alto"};
+const RATE_ES={Slow:"Lenta",Normal:"Normal",Fast:"Rápida"};
+const tier_es=t=>(TIER_ES[t]||t).toLowerCase();
+const mistakes=n=>n+" "+(n==="1"?"error":"errores");
+const ES_PAT=[
+  [/^Question (\d+) of (\d+)$/,m=>`Pregunta ${m[1]} de ${m[2]}`],
+  [/^(Very low|Low|Moderate|High|Very high) risk level$/,m=>`Nivel de riesgo ${tier_es(m[1])}`],
+  [/^Model score ([\d.]+) out of 1$/,m=>`Puntaje del modelo: ${m[1]} de 1`],
+  [/^Score rose by ([\d.]+) since the last screening\.$/,m=>`El puntaje subió ${m[1]} desde la última evaluación.`],
+  [/^(\d+) (people|person)$/,m=>`${m[1]} ${m[2]==="people"?"personas":"persona"}`],
+  [/^(\d+) new alerts$/,m=>`${m[1]} alertas nuevas`],
+  [/^Moves: (\d+)$/,m=>`Movimientos: ${m[1]}`],
+  [/^🎉 Done in (\d+) moves\. Fewer moves is better\.$/,m=>`🎉 Terminado en ${m[1]} movimientos. Menos movimientos es mejor.`],
+  [/^(\d+) moves$/,m=>`${m[1]} movimientos`],
+  [/^Round (\d+) of (\d+)$/,m=>`Ronda ${m[1]} de ${m[2]}`],
+  [/^(\d+)\/10 correct, ([\d.]+)s average$/,m=>`${m[1]}/10 correctas, ${m[2]} s de promedio`],
+  [/^Part ([AB])$/,m=>`Parte ${m[1]}`],
+  [/^Not quite\. Look for (\w+)\.$/,m=>`Casi. Busque el ${m[1]}.`],
+  [/^Part A done in ([\d.]+)s\. Next, switch between numbers and letters\.$/,m=>`Parte A terminada en ${m[1]} s. Ahora alterne entre números y letras.`],
+  [/^Part A ([\d.]+)s · Part B ([\d.]+)s · (\d+) mistakes?$/,m=>`Parte A ${m[1]} s · Parte B ${m[2]} s · ${mistakes(m[3])}`],
+  [/^A ([\d.]+)s, B ([\d.]+)s, (\d+) mistakes?$/,m=>`A ${m[1]} s, B ${m[2]} s, ${mistakes(m[3])}`],
+  [/^Speed: (\w+)$/,m=>`Velocidad: ${RATE_ES[m[1]]||m[1]}`],
+  [/^This is the (\w+) reading speed\.$/,m=>`Esta es la velocidad de lectura ${(RATE_ES[m[1][0].toUpperCase()+m[1].slice(1)]||m[1]).toLowerCase()}.`],
+  [/^Welcome, (.+)!$/,m=>`¡Bienvenido(a), ${m[1]}!`],
+  [/^Now screening for (.+)\.$/,m=>`Ahora evaluando a ${m[1]}.`],
+  [/^Logged in as (.+)$/,m=>`Sesión iniciada como ${m[1]}`],
+  [/^(.+) \(account: (.+)\)$/,m=>`${m[1]} (cuenta: ${m[2]})`],
+  [/^Latest result: (.+) risk level \(model score ([\d.]+)\)$/,m=>`Último resultado: nivel de riesgo ${tier_es(m[1])} (puntaje del modelo: ${m[2]})`],
+  [/^Something went wrong scoring this screening\. Missing: (.*)$/,m=>`Algo salió mal al calcular esta evaluación. Falta: ${m[1]}`],
+  [/^Delete all screenings and game scores for (.+)\? This can't be undone\.$/,m=>`¿Borrar todas las evaluaciones y los puntajes de juegos de ${m[1]==="yourself"?"usted":m[1]}? Esto no se puede deshacer.`],
+  [/^ReMind screening result for (.+)$/,m=>`Resultado de evaluación de ReMind: ${m[1]}`],
+  [/^ReMind screening on (.+)$/,m=>`Evaluación de ReMind del ${m[1]}`],
+  [/^Risk level: (.+) \(model score ([\d.]+)\)$/,m=>`Nivel de riesgo: ${tier_es(m[1])} (puntaje del modelo: ${m[2]})`],
+  [/^Pattern: (higher|lower) risk$/,m=>`Patrón: riesgo más ${m[1]==="higher"?"alto":"bajo"}`],
+  [/^(\d+): (.+)\.$/,m=>`${m[1]}: ${OPT_ES[m[2]]||m[2]}.`], // answer buttons read aloud ("1: None.")
+  [/^(.+): (raised|lowered) the score(\.?)$/,m=>`${ES[m[1]]||m[1]}: ${m[2]==="raised"?"subió":"bajó"} el puntaje${m[3]}`],
+];
+// Translate one English string (keeps surrounding spaces). ctx "opt" = an answer button.
+function tr(s,ctx){
+  if(LANG!=="es"||s==null)return s;
+  const k=String(s).trim();if(!k)return s;
+  let out=ctx==="opt"&&OPT_ES[k]!=null?OPT_ES[k]:ES[k]!=null?ES[k]:TIER_ES[k];
+  if(out==null)for(const [re,fn] of ES_PAT){const m=k.match(re);if(m){out=fn(m);break}}
+  return out==null?s:String(s).replace(k,()=>out);
+}
+const I18N_ATTRS=["aria-label","title","placeholder","data-say"];
+const EN=new WeakMap(),SHOWN=new WeakMap(); // original English / what we last displayed, per text node or element
+function i18nText(n){
+  const p=n.parentElement;if(!p||p.closest("script,style,.no-i18n"))return;
+  if(!EN.has(n)||(n.data!==EN.get(n)&&n.data!==SHOWN.get(n)))EN.set(n,n.data); // app changed it: new English
+  const en=EN.get(n),want=LANG==="es"?tr(en,p.closest(".opt")?"opt":null):en;
+  SHOWN.set(n,want);if(n.data!==want)n.data=want;
+}
+function i18nAttrs(el){
+  if(el.closest(".no-i18n"))return;
+  let o=EN.get(el);if(!o){o={};EN.set(el,o)}
+  for(const a of I18N_ATTRS){
+    if(!el.hasAttribute(a))continue;const v=el.getAttribute(a);
+    if(!(a in o)||(v!==o[a]&&v!==o["~"+a]))o[a]=v;
+    const want=LANG==="es"?tr(o[a]):o[a];o["~"+a]=want;if(v!==want)el.setAttribute(a,want);
+  }
+}
+function i18nTree(root){
+  if(root.nodeType===3){i18nText(root);return}
+  if(root.nodeType!==1||root.matches("script,style"))return;
+  i18nAttrs(root);
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);let n;
+  while((n=w.nextNode()))n.nodeType===3?i18nText(n):i18nAttrs(n);
+}
+const i18nObs=new MutationObserver(ms=>{for(const m of ms){
+  if(m.type==="childList")m.addedNodes.forEach(i18nTree);
+  else if(m.type==="characterData")i18nText(m.target);
+  else i18nAttrs(m.target);
+}});
+function setLang(l){
+  LANG=l==="es"?"es":"en";A.lang=LANG;store.set("a11y",A);
+  document.documentElement.lang=LANG;
+  document.title=LANG==="es"?"ReMind – Evaluación temprana de Alzheimer":"ReMind – Early Alzheimer's Screening";
+  const b=$("langb");b.innerHTML='<svg><use href="#i-globe"/></svg>'+(LANG==="es"?"English":"Español");b.lang=LANG==="es"?"en":"es";
+  b.setAttribute("aria-label",LANG==="es"?"Switch to English":"Cambiar a español");
+  stopSpeak();TTS.voice=null;pickVoice();
+  i18nTree(document.body);
+  showQuote();if(curSec==="track")renderHist();if(curSec==="games")gamesInit(); // re-draw dates in the new format
+}
+function startI18n(){
+  i18nObs.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:I18N_ATTRS});
+  $("langb").onclick=()=>{setLang(LANG==="es"?"en":"es");toast(LANG==="es"?"Idioma: español":"Language: English")};
+  setLang(LANG);
+}
 let toastT;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),3600)}
 
 /* ============ MODEL ============ */
@@ -741,7 +842,7 @@ function finish(){
 
 /* ============ FACTORS, CHARTS, CAREGIVER ============ */
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-const sd=d=>new Date(d).toLocaleDateString(undefined,{month:"numeric",day:"numeric"});
+const sd=d=>new Date(d).toLocaleDateString(LOC(),{month:"numeric",day:"numeric"});
 const FL={age:"Age",sex:"Sex",educ:"Years of education",ANXSEV:"Anxiety",DEPDSEV:"Low mood",APASEV:"Apathy",AGITSEV:"Agitation",NACCGDS:"Depression scale (GDS)",ENERGY:"Feeling full of energy",AFRAID:"Fear something bad will happen",MOT:"Repetitive movements",NITE:"Night-time disruptions",APP:"Appetite changes"};
 const REF={age:65,sex:1.5,educ:16,ANXSEV:0,DEPDSEV:0,APASEV:0,AGITSEV:0,NACCGDS:2,ENERGY:1,AFRAID:0,MOT:0,NITE:0,APP:0};
 // How much each answer moved the score: swap it for the "typical healthy" value and see how far the
@@ -800,22 +901,23 @@ function updateBadge(){
 }
 function dashHTML(){
   if(!cur)return"";const ps=people();
-  const rows=ps.map(pr=>{const h=rd(pr),l=h[h.length-1],al=alertsFor(pr);return `<tr><td><b>${esc(pr||"Myself")}</b></td><td>${l?lvl(l.t)+`<div class="muted" style="font-size:.8rem;margin-top:4px">${new Date(l.d).toLocaleDateString()}</div>`:"None yet"}</td><td>${al.map(x=>esc(x.m)).join("<br>")||"✓ All clear"}</td></tr>`}).join("");
+  const rows=ps.map(pr=>{const h=rd(pr),l=h[h.length-1],al=alertsFor(pr);return `<tr><td><b>${esc(pr||"Myself")}</b></td><td>${l?lvl(l.t)+`<div class="muted" style="font-size:.8rem;margin-top:4px">${new Date(l.d).toLocaleDateString(LOC())}</div>`:"None yet"}</td><td>${al.map(x=>esc(x.m)).join("<br>")||"✓ All clear"}</td></tr>`}).join("");
   return `<div class="panel"><div class="phead"><h2>${ps.length>1?"Caregiver dashboard":"Alerts"}</h2><span class="chip">${ico("bell").replace("<svg","<svg width='14' height='14'")}${ps.length} ${ps.length>1?"people":"person"}</span></div><div class="tw"><table><tr><th>Person</th><th>Latest</th><th>Alerts</th></tr>${rows}</table></div><p class="muted" style="margin:14px 0 0">Use "Add a person" at the top to screen someone you care for. After a screening, "Email result" sends a summary to a family member or doctor.</p></div>`;
 }
-const mailHref=(p,t,high)=>"mailto:?subject="+encodeURIComponent("ReMind screening result for "+(prof||cur))+"&body="+encodeURIComponent(`ReMind screening on ${new Date().toLocaleDateString()}\nRisk level: ${t} (model score ${p.toFixed(2)})\nPattern: ${high?"higher":"lower"} risk\nThis is a screening tool, not a diagnosis.`);
+const mailHref=(p,t,high)=>"mailto:?subject="+encodeURIComponent(tr("ReMind screening result for "+(prof||cur)))+"&body="+encodeURIComponent([`ReMind screening on ${new Date().toLocaleDateString(LOC())}`,`Risk level: ${t} (model score ${p.toFixed(2)})`,`Pattern: ${high?"higher":"lower"} risk`,"This is a screening tool, not a diagnosis."].map(x=>tr(x)).join("\n"));
 function printReport(){
   const h=store.get("history",[]),g=store.get("gameLog",[]);
   if(!h.length){toast("Complete a screening first.");return}
   const l=h[h.length-1],F=l.f?factors(l.f):[];
   $("report").innerHTML=`<h1>ReMind screening report</h1>
-  <p><b>Person:</b> ${esc(prof||cur)}${prof?" (account: "+esc(cur)+")":""}<br><b>Date:</b> ${new Date(l.d).toLocaleDateString()}</p>
+  <p><b>Person:</b> ${esc(prof||cur)}${prof?" (account: "+esc(cur)+")":""}<br><b>Date:</b> ${new Date(l.d).toLocaleDateString(LOC())}</p>
   <h2>Latest result: ${l.t} risk level (model score ${l.p.toFixed(2)})</h2>
   <p>${l.high?"Higher risk pattern":"Lower risk pattern"}. This is a screening tool, not a diagnosis.</p>
   ${F.length?"<h3>Main factors</h3><ul>"+F.map(x=>`<li>${FL[x.k]}: ${x.c>0?"raised":"lowered"} the score</li>`).join("")+"</ul>":""}
-  <h3>Screening history</h3><table border="1" cellpadding="4" style="border-collapse:collapse"><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.t||""}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table>
-  ${g.length?"<h3>Recent game results</h3><table border='1' cellpadding='4' style='border-collapse:collapse'><tr><th>Date</th><th>Game</th><th>Result</th></tr>"+g.slice(-6).map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${x.g}</td><td>${x.r}</td></tr>`).join("")+"</table>":""}
+  <h3>Screening history</h3><table border="1" cellpadding="4" style="border-collapse:collapse"><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.map(x=>`<tr><td>${new Date(x.d).toLocaleDateString(LOC())}</td><td>${x.t||""}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table>
+  ${g.length?"<h3>Recent game results</h3><table border='1' cellpadding='4' style='border-collapse:collapse'><tr><th>Date</th><th>Game</th><th>Result</th></tr>"+g.slice(-6).map(x=>`<tr><td>${new Date(x.d).toLocaleDateString(LOC())}</td><td>${x.g}</td><td>${x.r}</td></tr>`).join("")+"</table>":""}
   <p style="font-size:10pt">Model: neural network trained on National Alzheimer's Coordinating Center data (cross-validated AUC 0.84). It was trained on research-clinic participants, so levels compare you with that group. Please discuss these results with a doctor.</p>`;
+  i18nTree($("report")); // translate now: print() runs before the watcher would
   window.print();
 }
 
@@ -828,19 +930,19 @@ function renderHist(){
   if(!h.length)html+=`<div class="panel empty"><div class="big" aria-hidden="true">📋</div><h2>No screenings yet</h2><p class="muted" style="margin:0 auto 18px">Take the 5-minute screening to see your risk level and start tracking.</p><button class="btn" data-go="screen">Start screening${ico("arrow")}</button></div>`;
   else{
     html+=`<div class="panel"><h2>Risk score over time</h2>${chart(h.slice(-8).map(x=>({x:sd(x.d),y:x.p})),{min:0,max:1,line:HIGH_CUTOFF,fmt:v=>v.toFixed(1),label:"Risk score trend"})}<p class="muted" style="margin:6px 0 0">Dashed line: high-risk cutoff (0.5). Lower is better.</p></div>`;
-    html+=`<div class="panel"><h2>Screenings</h2><div class="tw"><table><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.slice().reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString()}</td><td>${lvl(x.t)}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table></div></div>`;
+    html+=`<div class="panel"><h2>Screenings</h2><div class="tw"><table><tr><th>Date</th><th>Level</th><th>Score</th></tr>${h.slice().reverse().map(x=>`<tr><td>${new Date(x.d).toLocaleDateString(LOC())}</td><td>${lvl(x.t)}</td><td>${x.p.toFixed(2)}</td></tr>`).join("")}</table></div></div>`;
   }
   const mm=g.filter(x=>x.g==="Memory match"&&x.v!=null).slice(-8),ss=g.filter(x=>x.g==="Stroop"&&x.v!=null).slice(-8),tc=g.filter(x=>x.g==="Trail connect"&&x.v!=null).slice(-8);
   if(mm.length||ss.length||tc.length){
     html+=`<div class="twocol">`;
     if(mm.length)html+=`<div class="panel"><h2>Memory match: moves</h2>${chart(mm.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...mm.map(x=>x.v))+2),fmt:v=>Math.round(v),label:"Memory match moves trend"})}<p class="muted" style="margin:6px 0 0">Fewer moves is better.</p></div>`;
     if(ss.length)html+=`<div class="panel"><h2>Color word test: seconds</h2>${chart(ss.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...ss.map(x=>x.v))+1),fmt:v=>v.toFixed(1),label:"Color word test time trend"})}<p class="muted" style="margin:6px 0 0">Faster is better.</p></div>`;
+    if(tc.length)html+=`<div class="panel"><h2>Trail connect: Part B seconds</h2>${chart(tc.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...tc.map(x=>x.v))+2),fmt:v=>Math.round(v),label:"Trail connect Part B time trend"})}<p class="muted" style="margin:6px 0 0">Faster is better.</p></div>`;
     html+=`</div>`;
   }
   if(h.length||g.length)html+=`<div class="row" style="margin-top:22px"><button class="btn" id="rep2">${ico("file")}Download doctor report</button><button class="btn ghost" id="clr">Clear this person's data</button></div>`;
-  if(tc.length)html+=`<div class="panel"><h2>Trail connect: Part B seconds</h2>${chart(tc.map(x=>({x:sd(x.d),y:x.v})),{min:0,max:Math.ceil(Math.max(...tc.map(x=>x.v))+2),fmt:v=>Math.round(v),label:"Trail connect Part B time trend"})}<p class="muted" style="margin:6px 0 0">Faster is better.</p></div>`;
   $("hist").innerHTML=html;
-  const c=$("clr");if(c)c.onclick=()=>{if(!confirm("Delete all screenings and game scores for "+(prof||"yourself")+"? This can't be undone."))return;store.set("history",[]);store.set("gameLog",[]);store.set("mode",null);renderHist();updateBadge();toast("Data cleared.")};
+  const c=$("clr");if(c)c.onclick=()=>{if(!confirm(tr("Delete all screenings and game scores for "+(prof||"yourself")+"? This can't be undone.")))return;store.set("history",[]);store.set("gameLog",[]);store.set("mode",null);renderHist();updateBadge();toast("Data cleared.")};
   const r2=$("rep2");if(r2)r2.onclick=printReport;
 }
 function logGame(g,r,v){const l=store.get("gameLog",[]);l.push({d:new Date().toISOString(),g,r,v});store.set("gameLog",l)}
@@ -992,7 +1094,7 @@ function resetViews(){
 function switchPerson(){resetViews();updateBadge();go(curSec)}
 $("whoSel").onchange=()=>{prof=$("whoSel").value;switchPerson()};
 const dlg=$("pdlg");
-$("addP").onclick=()=>{$("pname").value="";if(dlg.showModal){dlg.showModal();$("pname").focus()}else addPerson(prompt("Name of the person you are screening (for example, Mom)")||"")};
+$("addP").onclick=()=>{$("pname").value="";if(dlg.showModal){dlg.showModal();$("pname").focus()}else addPerson(prompt(tr("Name of the person you are screening (for example, Mom)"))||"")};
 $("pcancel").onclick=()=>dlg.close();
 $("pform").onsubmit=e=>{e.preventDefault();const n=$("pname").value;if(addPerson(n))dlg.close()};
 function addPerson(raw){
@@ -1028,9 +1130,10 @@ $("autob").onclick=()=>{A.auto=!A.auto;applyA();toast(A.auto?"Questions will be 
 const TTS={ss:("speechSynthesis" in window)?window.speechSynthesis:null,on:false,src:null,voice:null,gen:0,u:null,el:null,wd:0};
 function pickVoice(){
   if(!TTS.ss)return;const vs=TTS.ss.getVoices();if(!vs.length)return;
-  const en=vs.filter(v=>/^en([-_]|$)/i.test(v.lang));
-  const nice=/(Natural|Neural|Premium|Enhanced|Samantha|Ava|Allison|Google US English|Aria|Jenny|Zira)/i;
-  TTS.voice=en.find(v=>nice.test(v.name)&&/US/i.test(v.lang)&&v.localService)||en.find(v=>nice.test(v.name)&&/US/i.test(v.lang))||en.find(v=>v.default)||en.find(v=>/US/i.test(v.lang))||en[0]||vs[0];
+  const es=LANG==="es",mine=vs.filter(v=>new RegExp("^"+(es?"es":"en")+"([-_]|$)","i").test(v.lang));
+  const nice=es?/(Natural|Neural|Premium|Enhanced|Paulina|M[oó]nica|Google espa|Sabina|Dalia|Helena|Elvira|Jorge|Juan)/i:/(Natural|Neural|Premium|Enhanced|Samantha|Ava|Allison|Google US English|Aria|Jenny|Zira)/i;
+  const region=es?/(US|MX|419)/i:/US/i; // prefer American Spanish / US English
+  TTS.voice=mine.find(v=>nice.test(v.name)&&region.test(v.lang)&&v.localService)||mine.find(v=>nice.test(v.name)&&region.test(v.lang))||mine.find(v=>nice.test(v.name))||mine.find(v=>v.default)||mine.find(v=>region.test(v.lang))||mine[0]||(es?null:vs[0]);
 }
 if(TTS.ss){pickVoice();if(TTS.ss.addEventListener)TTS.ss.addEventListener("voiceschanged",pickVoice);else TTS.ss.onvoiceschanged=pickVoice}
 function splitText(t){
@@ -1062,7 +1165,7 @@ function stopSpeak(){
 }
 function speakItems(items,src){
   if(!TTS.ss||typeof SpeechSynthesisUtterance==="undefined"){toast("Read aloud isn't available in this browser. Try Chrome, Edge, or Safari.");return false}
-  const q=[];items.forEach(it=>splitText(it.text).forEach(t=>q.push({el:it.el,t})));
+  const q=[];items.forEach(it=>splitText(tr(it.text)).forEach(t=>q.push({el:it.el,t})));
   if(!q.length){toast("Nothing to read on this page.");return false}
   const wasBusy=TTS.ss.speaking||TTS.ss.pending;
   stopSpeak();if(!TTS.voice)pickVoice();
@@ -1073,7 +1176,7 @@ function speakItems(items,src){
     if(i>=q.length){stopSpeak();return}
     const it=q[i],me=i;mark(it.el);
     const u=new SpeechSynthesisUtterance(it.t);
-    if(TTS.voice){u.voice=TTS.voice;u.lang=TTS.voice.lang}else u.lang="en-US";
+    if(TTS.voice){u.voice=TTS.voice;u.lang=TTS.voice.lang}else u.lang=LANG==="es"?"es-US":"en-US";
     u.rate=A.rate;u.pitch=1;u.volume=1;
     const advance=()=>{if(gen!==TTS.gen||i!==me)return;clearTimeout(TTS.wd);i++;retried=false;next()};
     u.onend=advance;
@@ -1083,7 +1186,7 @@ function speakItems(items,src){
       clearTimeout(TTS.wd);
       if(e.error==="not-allowed"){stopSpeak();toast("Your browser blocked audio. Tap the read-aloud button again.");return}
       if(!retried&&TTS.voice&&!TTS.voice.localService){ // online voice failed: fall back to an on-device voice
-        retried=true;const vs=TTS.ss.getVoices();TTS.voice=vs.find(v=>v.localService&&/^en/i.test(v.lang))||vs.find(v=>v.localService)||null;next();return}
+        retried=true;const vs=TTS.ss.getVoices();TTS.voice=vs.find(v=>v.localService&&new RegExp("^"+LANG,"i").test(v.lang))||null;next();return}
       i++;retried=false;next();
     };
     TTS.u=u; // keep a reference so Chrome doesn't garbage-collect it mid-sentence
@@ -1158,12 +1261,13 @@ function showQuote(){
   $("qText").textContent=t;
   $("qBy").textContent=by?"— "+by:"";
   $("qBy").classList.toggle("hidden",!by);
-  $("qDate").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
+  $("qDate").textContent=new Date().toLocaleDateString(LOC(),{weekday:"long",month:"short",day:"numeric"});
   const q=$("dailyQuote");q.classList.remove("anim");void q.offsetWidth;q.classList.add("anim");
 }
 $("qNext").onclick=()=>{qOff++;showQuote()};
 $("qListen").onclick=()=>speakItems([{el:$("qText"),text:$("qText").textContent}],"quote");
 showQuote();
+startI18n();
 applyA();renderUser();
 go("home");
 </script>
