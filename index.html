@@ -254,6 +254,12 @@ main{max-width:1120px;margin:0 auto;padding:26px 20px 70px}
 .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .cols .btn{padding:15px}
 .trail{grid-column:1/-1}
+/* Cards in the same row match heights; the Stroop word box grows to fill the extra space */
+.games{align-items:stretch}
+.games>.panel{margin:0}
+.games>.panel:not(.trail){display:flex;flex-direction:column}
+.games .grid{width:100%}
+.games .stroop{flex:1;display:grid;place-items:center}
 .tbar{display:flex;justify-content:space-between;align-items:center;margin:16px 0 10px}
 .ttime{font-variant-numeric:tabular-nums;font-weight:800;font-size:1.3rem}
 .tboard{position:relative;aspect-ratio:2/1;max-width:900px;margin:0 auto;background:var(--surface-2);border:1px solid var(--line);border-radius:18px;overflow:hidden;touch-action:manipulation}
@@ -379,6 +385,7 @@ dialog h2{margin-top:0}
   <button id="fsp" aria-label="Larger text">A+</button>
   <button id="hcb" aria-pressed="false"><svg><use href="#i-contrast"/></svg>High contrast</button>
   <button id="autob" aria-pressed="false" title="Read each screening question aloud automatically"><svg><use href="#i-eye"/></svg>Auto-read questions</button>
+  <button id="rateb" title="Change how fast ReMind reads aloud"><svg><use href="#i-speak"/></svg><span>Speed: Normal</span></button>
   <button id="tts" aria-pressed="false"><svg><use href="#i-speak"/></svg><span>Read page aloud</span></button>
 </div>
 
@@ -997,11 +1004,19 @@ function addPerson(raw){
 }
 
 /* ============ ACCESSIBILITY ============ */
-const A=Object.assign({s:100,hc:false,auto:false,rate:.95},store.get("a11y",{}));
-function applyA(){document.documentElement.style.fontSize=A.s+"%";document.documentElement.classList.toggle("hc",A.hc);$("hcb").setAttribute("aria-pressed",String(A.hc));$("autob").setAttribute("aria-pressed",String(A.auto));store.set("a11y",A)}
+// Read-aloud speeds (1 = the voice's default). Tap the Speed button to cycle through them.
+const RATES=[["Slow",.65],["Normal",.8],["Fast",1]];
+const A=Object.assign({s:100,hc:false,auto:false,rate:.8},store.get("a11y",{}));
+if(!RATES.some(r=>r[1]===A.rate))A.rate=.8; // older saved speeds (e.g. .95) move to Normal
+const rateName=()=>RATES.find(r=>r[1]===A.rate)[0];
+function applyA(){document.documentElement.style.fontSize=A.s+"%";document.documentElement.classList.toggle("hc",A.hc);$("hcb").setAttribute("aria-pressed",String(A.hc));$("autob").setAttribute("aria-pressed",String(A.auto));store.set("a11y",A);$("rateb").querySelector("span").textContent="Speed: "+rateName()}
 $("fsm").onclick=()=>{A.s=Math.max(85,A.s-10);applyA()};
 $("fsp").onclick=()=>{A.s=Math.min(160,A.s+10);applyA()};
 $("hcb").onclick=()=>{A.hc=!A.hc;applyA()};
+$("rateb").onclick=()=>{
+  const i=RATES.findIndex(r=>r[1]===A.rate);A.rate=RATES[(i+1)%RATES.length][1];applyA();
+  speakItems([{el:null,text:"This is the "+rateName().toLowerCase()+" reading speed."}],"demo");
+};
 $("autob").onclick=()=>{A.auto=!A.auto;applyA();toast(A.auto?"Questions will be read aloud automatically.":"Auto-read is off.");if(A.auto&&curSec==="screen"&&!$("quiz").classList.contains("hidden"))readQ(true)};
 
 /* ============ TEXT TO SPEECH ============
